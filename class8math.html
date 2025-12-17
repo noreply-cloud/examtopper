@@ -8,9 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- DESIGN TO MATCH YOUR INDEX.HTML --- */
         :root {
-            /* Extracted Logo Blue */
             --primary: #3F72F4; 
             --primary-dark: #2a5bc9;
             --bg: #f8fafc;
@@ -33,16 +31,12 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        .back-btn { font-size: 18px; color: var(--text-main); text-decoration: none; cursor: pointer; }
         h1 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); }
 
-        /* MAIN CONTAINER */
         main { max-width: 800px; margin: 0 auto; padding: 20px; }
 
         /* CHAPTER CARD */
@@ -63,35 +57,50 @@
             cursor: pointer;
             background: white;
         }
-
         .chapter-header:active { background-color: #f1f5f9; }
-
         .chapter-title { font-weight: 700; font-size: 16px; color: var(--text-main); }
         .chapter-icon { color: var(--primary); font-size: 18px; margin-right: 10px; }
         .chevron { color: var(--text-sub); transition: transform 0.3s; }
         .chapter-card.active .chevron { transform: rotate(180deg); }
 
-        /* TOPICS CONTAINER */
         .chapter-body { display: none; background: #f8fafc; border-top: 1px solid var(--border); }
         .chapter-card.active .chapter-body { display: block; }
 
-        /* TOPIC ITEM */
         .topic-item { padding: 20px; border-bottom: 1px solid var(--border); background: white; margin-bottom: 10px; }
-        .topic-title { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; }
-        .topic-title i { margin-right: 8px; }
-
-        /* SUB-TOPIC */
+        .topic-title { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; }
+        
+        /* SUB-TOPIC STYLES (TOGGLE) */
         .sub-topic {
             margin-left: 10px;
             padding-left: 15px;
             border-left: 2px solid var(--border);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        .sub-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+
+        .sub-topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .sub-title { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .sub-chevron { font-size: 12px; color: var(--text-sub); transition: transform 0.3s; }
+        
+        /* Rotate chevron when active */
+        .sub-topic.active .sub-chevron { transform: rotate(180deg); }
+
+        .sub-topic-body {
+            display: none; /* Hidden by default */
+            padding-top: 8px;
+        }
+        .sub-topic.active .sub-topic-body { display: block; }
+
         .sub-desc { font-size: 13px; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px; }
 
         /* MEDIA BUTTONS */
-        .media-actions { display: flex; gap: 10px; margin-bottom: 15px; }
+        .media-actions { display: flex; gap: 10px; margin-bottom: 10px; }
         .btn-media {
             flex: 1;
             padding: 8px 12px;
@@ -100,19 +109,33 @@
             font-weight: 600;
             text-align: center;
             cursor: pointer;
-            text-decoration: none;
+            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: opacity 0.2s;
         }
-        .btn-media:active { opacity: 0.8; }
         .btn-pdf { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
         .btn-video { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
 
-        /* QUIZ SECTION */
-        .quiz-wrapper { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border); }
+        /* MEDIA VIEWER */
+        .media-content {
+            display: none;
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            position: relative;
+        }
+        .media-content iframe {
+            width: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* QUIZ STYLES */
+        .quiz-wrapper { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); }
         .btn-quiz {
             width: 100%;
             padding: 12px;
@@ -129,48 +152,23 @@
             gap: 8px;
         }
 
-        /* QUIZ INTERFACE (Hidden by default) */
         .quiz-interface { display: none; margin-top: 15px; background: #f1f5f9; padding: 15px; border-radius: 8px; }
         .q-card { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #cbd5e1; }
         .q-text { font-weight: 600; font-size: 14px; margin-bottom: 10px; display: block; }
-        
         .opt-label {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: white;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            border: 1px solid var(--border);
-            font-size: 13px;
-            cursor: pointer;
+            display: flex; align-items: center; padding: 10px;
+            background: white; border-radius: 6px; margin-bottom: 6px;
+            border: 1px solid var(--border); font-size: 13px; cursor: pointer;
         }
         .opt-label input { margin-right: 10px; accent-color: var(--primary); }
-        
         .opt-label.correct { background: #dcfce7; border-color: var(--success); color: #166534; }
         .opt-label.wrong { background: #fee2e2; border-color: var(--error); color: #991b1b; }
-
-        .quiz-score { 
-            text-align: center; 
-            font-weight: 700; 
-            padding: 15px; 
-            background: var(--text-main); 
-            color: white; 
-            border-radius: 8px; 
-            margin-top: 10px;
-            display: none; 
-        }
-
-        @media (max-width: 400px) {
-            h1 { font-size: 16px; }
-            .chapter-header { padding: 15px; }
-        }
+        .quiz-score { text-align: center; font-weight: 700; padding: 15px; background: var(--text-main); color: white; border-radius: 8px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
         <h1>Class 8 Mathematics</h1>
     </header>
 
@@ -178,14 +176,8 @@
 
     <script>
         // ===============================================
-        //  DATA STRUCTURE: EDIT URLS HERE
+        //  COMPLETE CLASS 8 MATH SYLLABUS DATA
         // ===============================================
-        
-        /* INSTRUCTIONS:
-           1. Paste your PDF links in 'pdfUrl'
-           2. Paste your Video links in 'videoUrl'
-           3. If a link is empty "", the button will show an alert.
-        */
 
         const syllabus = [
             {
@@ -197,9 +189,10 @@
                         subTopics: [
                             { 
                                 name: "Closure & Commutativity", 
-                                desc: "Understanding how rational numbers behave under addition, subtraction, multiplication, and division.",
-                                pdfUrl: "", // INSERT PDF URL HERE
-                                videoUrl: "" // INSERT VIDEO URL HERE
+                                desc: "Understanding how rational numbers behave under addition and multiplication.",
+                                // --- YOUR LINKS INSERTED HERE ---
+                                pdfUrl: "https://drive.google.com/file/d/1hPq4LUDbz3DqS72jVnL-I2jlYiyKYoMf/view?usp=drive_link",
+                                videoUrl: "https://drive.google.com/file/d/1CKn52anZy1NlrmfzDINpeyF57oNTDHdu/view?usp=drive_link"
                             },
                             { 
                                 name: "Associativity & Distributivity", 
@@ -208,7 +201,6 @@
                                 videoUrl: ""
                             }
                         ],
-                        // 10 Question Quiz for this Topic
                         quiz: [
                             { q: "Rational numbers are closed under subtraction.", options: ["True", "False"], ans: 0 },
                             { q: "Multiplicative identity for rational numbers is:", options: ["0", "1", "-1", "None"], ans: 1 },
@@ -231,18 +223,8 @@
                     {
                         title: "Solving Equations",
                         subTopics: [
-                            { 
-                                name: "Variable on one side", 
-                                desc: "Methods to solve linear equations having the variable on only one side.",
-                                pdfUrl: "", 
-                                videoUrl: "" 
-                            },
-                            { 
-                                name: "Variable on both sides", 
-                                desc: "Techniques for solving equations where variables appear on both LHS and RHS.",
-                                pdfUrl: "", 
-                                videoUrl: "" 
-                            }
+                            { name: "Variable on one side", desc: "Methods to solve linear equations having the variable on only one side.", pdfUrl: "", videoUrl: "" },
+                            { name: "Variable on both sides", desc: "Techniques for solving equations where variables appear on both LHS and RHS.", pdfUrl: "", videoUrl: "" }
                         ],
                         quiz: [
                             { q: "Solution of 2x - 3 = 7 is:", options: ["5", "2", "4", "3"], ans: 0 },
@@ -266,16 +248,8 @@
                     {
                         title: "Polygons & Properties",
                         subTopics: [
-                            { 
-                                name: "Classification of Polygons", 
-                                desc: "Convex, Concave, Regular and Irregular polygons.",
-                                pdfUrl: "", videoUrl: "" 
-                            },
-                            { 
-                                name: "Angle Sum Property", 
-                                desc: "Sum of interior angles = (n-2)×180°. Sum of exterior angles = 360°.",
-                                pdfUrl: "", videoUrl: "" 
-                            }
+                            { name: "Classification of Polygons", desc: "Convex, Concave, Regular and Irregular polygons.", pdfUrl: "", videoUrl: "" },
+                            { name: "Angle Sum Property", desc: "Sum of interior angles = (n-2)×180°. Sum of exterior angles = 360°.", pdfUrl: "", videoUrl: "" }
                         ],
                         quiz: [
                             { q: "Sum of exterior angles of any polygon is:", options: ["180°", "360°", "540°", "90°"], ans: 1 },
@@ -546,12 +520,11 @@
         ];
 
         // ===============================================
-        //  APP LOGIC (DO NOT EDIT BELOW)
+        //  APP LOGIC
         // ===============================================
 
         const container = document.getElementById('syllabus-container');
 
-        // Render Syllabus
         syllabus.forEach(chapter => {
             const card = document.createElement('div');
             card.className = 'chapter-card';
@@ -578,19 +551,26 @@
                 // Topic Title
                 let html = `<div class="topic-title"><i class="fas fa-layer-group"></i> ${topic.title}</div>`;
 
-                // Subtopics with Media Buttons
-                topic.subTopics.forEach(sub => {
+                // Subtopics with Toggle Header
+                topic.subTopics.forEach((sub, sIndex) => {
+                    const mediaId = `media-${chapter.id}-${tIndex}-${sIndex}`;
                     html += `
                         <div class="sub-topic">
-                            <div class="sub-title">${sub.name}</div>
-                            <div class="sub-desc">${sub.desc}</div>
-                            <div class="media-actions">
-                                <a href="#" onclick="openLink('${sub.pdfUrl}', 'PDF')" class="btn-media btn-pdf">
-                                    <i class="fas fa-file-pdf"></i> View PDF
-                                </a>
-                                <a href="#" onclick="openLink('${sub.videoUrl}', 'Video')" class="btn-media btn-video">
-                                    <i class="fas fa-play-circle"></i> Watch Video
-                                </a>
+                            <div class="sub-topic-header" onclick="toggleSubTopic(this)">
+                                <span class="sub-title">${sub.name}</span>
+                                <i class="fas fa-chevron-down sub-chevron"></i>
+                            </div>
+                            <div class="sub-topic-body">
+                                <div class="sub-desc">${sub.desc}</div>
+                                <div class="media-actions">
+                                    <button onclick="toggleMedia('${sub.pdfUrl}', '${mediaId}', 'pdf')" class="btn-media btn-pdf">
+                                        <i class="fas fa-file-pdf"></i> View PDF
+                                    </button>
+                                    <button onclick="toggleMedia('${sub.videoUrl}', '${mediaId}', 'video')" class="btn-media btn-video">
+                                        <i class="fas fa-play-circle"></i> Watch Video
+                                    </button>
+                                </div>
+                                <div id="${mediaId}" class="media-content"></div>
                             </div>
                         </div>
                     `;
@@ -603,8 +583,7 @@
                         <button class="btn-quiz" onclick="toggleQuiz('${quizId}')">
                             <i class="fas fa-question-circle"></i> Take 10-Question Quiz
                         </button>
-                        <div id="${quizId}" class="quiz-interface">
-                            </div>
+                        <div id="${quizId}" class="quiz-interface"></div>
                     </div>
                 `;
 
@@ -623,35 +602,50 @@
             });
         });
 
-        // Function to handle Media Links
-        function openLink(url, type) {
-            event.preventDefault();
-            if(url && url.length > 0) {
-                window.open(url, '_blank');
-            } else {
-                alert(`No ${type} link added for this topic yet.`);
-            }
+        // --- TOGGLE SUB-TOPIC ---
+        function toggleSubTopic(headerElement) {
+            const subTopicDiv = headerElement.parentElement;
+            subTopicDiv.classList.toggle('active');
         }
 
-        // Function to Toggle and Render Quiz
+        // --- TOGGLE MEDIA (TALL PDF, SHORT VIDEO) ---
+        function toggleMedia(url, elementId, type) {
+            if (!url) { alert("No link available."); return; }
+            
+            const container = document.getElementById(elementId);
+            
+            // If already open, close it
+            if (container.style.display === "block") {
+                container.style.display = "none";
+                container.innerHTML = ""; 
+                return;
+            }
+
+            // AUTO CONVERT DRIVE VIEW LINKS TO PREVIEW LINKS
+            let embedUrl = url;
+            if (url.includes("drive.google.com") && url.includes("/view")) {
+                embedUrl = url.replace(/\/view.*/, "/preview");
+            }
+
+            // DYNAMIC HEIGHT: 800px for PDF, 400px for Video
+            const height = (type === 'pdf') ? '800px' : '400px';
+
+            container.innerHTML = `<iframe src="${embedUrl}" style="height:${height}" allow="autoplay"></iframe>`;
+            container.style.display = "block";
+        }
+
+        // --- QUIZ LOGIC ---
         function toggleQuiz(quizId) {
             const quizDiv = document.getElementById(quizId);
             const ids = quizId.split('-'); // quiz-1-0 (Chapter 1, Topic 0)
-            const chapterIdx = parseInt(ids[1]) - 1; // Array index correction if needed, but here ID matches
-            const topicIdx = parseInt(ids[2]);
-
-            // Find the specific quiz data
-            // Note: syllabus array index is 0-based, ID is 1-based. 
-            // We search by ID to be safe.
             const chapterData = syllabus.find(c => c.id == ids[1]);
-            const quizData = chapterData.topics[topicIdx].quiz;
+            const quizData = chapterData.topics[ids[2]].quiz;
 
             if (quizDiv.style.display === 'block') {
                 quizDiv.style.display = 'none';
                 return;
             }
 
-            // Render Questions only if empty (first load)
             if (quizDiv.innerHTML.trim() === '') {
                 let qHtml = '';
                 quizData.forEach((q, idx) => {
@@ -678,12 +672,10 @@
             quizDiv.style.display = 'block';
         }
 
-        // Function to Score Quiz
         function submitQuiz(quizId) {
             const ids = quizId.split('-');
             const chapterData = syllabus.find(c => c.id == ids[1]);
-            const topicIdx = parseInt(ids[2]);
-            const quizQuestions = chapterData.topics[topicIdx].quiz;
+            const quizQuestions = chapterData.topics[ids[2]].quiz;
             
             let score = 0;
             
@@ -692,7 +684,6 @@
                 const selected = qDiv.querySelector(`input[name="${quizId}-q${idx}"]:checked`);
                 const labels = qDiv.querySelectorAll('.opt-label');
 
-                // Reset styles
                 labels.forEach(l => l.classList.remove('correct', 'wrong'));
 
                 if (selected) {
@@ -702,11 +693,9 @@
                         selected.parentElement.classList.add('correct');
                     } else {
                         selected.parentElement.classList.add('wrong');
-                        // Highlight correct
                         labels[q.ans].classList.add('correct');
                     }
                 } else {
-                     // Highlight correct if skipped
                      labels[q.ans].classList.add('correct');
                 }
             });
@@ -715,7 +704,6 @@
             scoreDiv.innerText = `You Scored: ${score} / ${quizQuestions.length}`;
             scoreDiv.style.display = 'block';
         }
-
     </script>
 </body>
 </html>
