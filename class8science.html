@@ -1,1 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Class 8 Science</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #3F72F4; 
+            --primary-dark: #2a5bc9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
 
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 40px; }
+
+        header {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        h1 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); }
+
+        main { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+        /* CHAPTER CARD */
+        .chapter-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        
+        .chapter-header {
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+        }
+        .chapter-header:active { background-color: #f1f5f9; }
+        .chapter-title { font-weight: 700; font-size: 16px; color: var(--text-main); }
+        .chapter-icon { color: var(--primary); font-size: 18px; margin-right: 10px; }
+        .chevron { color: var(--text-sub); transition: transform 0.3s; }
+        .chapter-card.active .chevron { transform: rotate(180deg); }
+
+        .chapter-body { display: none; background: #f8fafc; border-top: 1px solid var(--border); }
+        .chapter-card.active .chapter-body { display: block; }
+
+        .topic-item { padding: 20px; border-bottom: 1px solid var(--border); background: white; margin-bottom: 10px; }
+        .topic-title { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; }
+        
+        /* SUB-TOPIC STYLES (TOGGLE) */
+        .sub-topic {
+            margin-left: 10px;
+            padding-left: 15px;
+            border-left: 2px solid var(--border);
+            margin-bottom: 10px;
+        }
+
+        .sub-topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .sub-title { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .sub-chevron { font-size: 12px; color: var(--text-sub); transition: transform 0.3s; }
+        
+        /* Rotate chevron when active */
+        .sub-topic.active .sub-chevron { transform: rotate(180deg); }
+
+        .sub-topic-body {
+            display: none; /* Hidden by default */
+            padding-top: 8px;
+        }
+        .sub-topic.active .sub-topic-body { display: block; }
+
+        .sub-desc { font-size: 13px; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px; }
+
+        .media-actions { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-media {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-pdf { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-video { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+
+        .media-content {
+            display: none;
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            position: relative;
+        }
+        .media-content iframe {
+            width: 100%;
+            border: none;
+            display: block;
+        }
+
+        .quiz-wrapper { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); }
+        .btn-quiz {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .quiz-interface { display: none; margin-top: 15px; background: #f1f5f9; padding: 15px; border-radius: 8px; }
+        .q-card { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #cbd5e1; }
+        .q-text { font-weight: 600; font-size: 14px; margin-bottom: 10px; display: block; }
+        .opt-label {
+            display: flex; align-items: center; padding: 10px;
+            background: white; border-radius: 6px; margin-bottom: 6px;
+            border: 1px solid var(--border); font-size: 13px; cursor: pointer;
+        }
+        .opt-label input { margin-right: 10px; accent-color: var(--primary); }
+        .opt-label.correct { background: #dcfce7; border-color: var(--success); color: #166534; }
+        .opt-label.wrong { background: #fee2e2; border-color: var(--error); color: #991b1b; }
+        .quiz-score { text-align: center; font-weight: 700; padding: 15px; background: var(--text-main); color: white; border-radius: 8px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Class 8 Science</h1>
+    </header>
+
+    <main id="syllabus-container"></main>
+
+    <script>
+        const syllabus = [
+            {
+                id: 1,
+                title: "Crop Production and Management",
+                topics: [
+                    {
+                        title: "Agricultural Practices",
+                        subTopics: [
+                            { 
+                                name: "Preparation of Soil", 
+                                desc: "Plowing and levelling.", 
+                                pdfUrl: "", // Paste PDF Link Here
+                                videoUrl: "" // Paste Video Link Here
+                            },
+                            { name: "Sowing & Manure", desc: "Seed selection and fertilizers.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Practice of growing same plants on large scale:", options: ["Gardening", "Agriculture", "Crop", "Horticulture"], ans: 2 },
+                            { q: "Kharif crop example:", options: ["Wheat", "Gram", "Paddy", "Pea"], ans: 2 },
+                            { q: "Loosening soil is:", options: ["Sowing", "Tilling", "Weeding", "Threshing"], ans: 1 },
+                            { q: "2,4-D is a:", options: ["Pesticide", "Weedicide", "Fungicide", "Fertilizer"], ans: 1 },
+                            { q: "Irrigation for uneven land:", options: ["Moat", "Dhekli", "Sprinkler", "Chain pump"], ans: 2 },
+                            { q: "Separating grain from chaff:", options: ["Winnowing", "Harvesting", "Threshing", "Sowing"], ans: 2 },
+                            { q: "Bacteria in root nodules:", options: ["Lactobacillus", "Rhizobium", "Yeast", "Virus"], ans: 1 },
+                            { q: "Rabi crops season:", options: ["Summer", "Rainy", "Winter", "Spring"], ans: 2 },
+                            { q: "Manure is:", options: ["Inorganic", "Natural", "Synthetic", "Chemical"], ans: 1 },
+                            { q: "Silos are used for:", options: ["Irrigation", "Harvesting", "Storage", "Ploughing"], ans: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Microorganisms: Friend and Foe",
+                topics: [
+                    {
+                        title: "Types & Uses",
+                        subTopics: [
+                            { name: "Major Groups", desc: "Bacteria, Fungi, Protozoa, Algae, and Viruses.", pdfUrl: "", videoUrl: "" },
+                            { name: "Friendly Microorganisms", desc: "Making of curd, bread, and commercial use.", pdfUrl: "", videoUrl: "" },
+                            { name: "Harmful Microorganisms", desc: "Pathogens causing diseases.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Which microorganism causes AIDS?", options: ["Bacteria", "Virus", "Protozoa", "Algae"], ans: 1 },
+                            { q: "The carrier of dengue virus is:", options: ["Female Anopheles", "Female Aedes", "Housefly", "Cockroach"], ans: 1 },
+                            { q: "Yeast is used in the production of:", options: ["Sugar", "Alcohol", "HCL", "Oxygen"], ans: 1 },
+                            { q: "Antibiotics are effective against:", options: ["Viruses", "Bacteria", "Allergies", "None"], ans: 1 },
+                            { q: "Conversion of sugar into alcohol is:", options: ["Moulding", "Fermentation", "Infection", "Fixation"], ans: 1 },
+                            { q: "Malaria is caused by a:", options: ["Protozoan", "Virus", "Bacterium", "Fungus"], ans: 0 },
+                            { q: "Which is a preservative?", options: ["Salt", "Sugar", "Vinegar", "All of these"], ans: 3 },
+                            { q: "Rust of wheat is caused by:", options: ["Fungi", "Virus", "Bacteria", "Algae"], ans: 0 },
+                            { q: "Pasteurization was discovered by:", options: ["Alexander Fleming", "Louis Pasteur", "Edward Jenner", "Robert Koch"], ans: 1 },
+                            { q: "Anthrax is a disease caused by:", options: ["Virus", "Bacteria", "Fungi", "Protozoa"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Coal and Petroleum",
+                topics: [
+                    {
+                        title: "Fossil Fuels",
+                        subTopics: [
+                            { name: "Coal", desc: "Formation (Carbonisation) and products like Coke, Coal Tar, Coal Gas.", pdfUrl: "", videoUrl: "" },
+                            { name: "Petroleum", desc: "Refining of petroleum and its constituents.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Which is a fossil fuel?", options: ["Wood", "Sun", "Coal", "Wind"], ans: 2 },
+                            { q: "Process of separating constituents of petroleum:", options: ["Carbonisation", "Refining", "Distillation", "Separation"], ans: 1 },
+                            { q: "Least polluting fuel for vehicles is:", options: ["Petrol", "Diesel", "CNG", "Kerosene"], ans: 2 },
+                            { q: "Main constituent of LPG is:", options: ["Methane", "Butane", "Hydrogen", "Oxygen"], ans: 1 },
+                            { q: "Purest form of carbon is:", options: ["Coke", "Coal Tar", "Coal Gas", "Charcoal"], ans: 0 },
+                            { q: "Naphthalene balls are obtained from:", options: ["Coal Tar", "Coke", "Coal Gas", "Petroleum"], ans: 0 },
+                            { q: "Formation of coal from vegetation is:", options: ["Carbonisation", "Oxidation", "Reduction", "Distillation"], ans: 0 },
+                            { q: "Petroleum is also called:", options: ["White Gold", "Black Gold", "Red Gold", "Blue Gold"], ans: 1 },
+                            { q: "Inexhaustible natural resource:", options: ["Coal", "Petroleum", "Sunlight", "Forests"], ans: 2 },
+                            { q: "Petrochemicals are used to make:", options: ["Fibres", "Detergents", "Plastics", "All of these"], ans: 3 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Combustion and Flame",
+                topics: [
+                    {
+                        title: "Burning & Fire",
+                        subTopics: [
+                            { name: "What is Combustion?", desc: "Combustible/Non-combustible substances and ignition temperature.", pdfUrl: "", videoUrl: "" },
+                            { name: "Flame Structure", desc: "Zones of a candle flame: Dark, Luminous, and Non-luminous.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Minimum temperature for a substance to catch fire:", options: ["Melting point", "Boiling point", "Ignition temp", "Critical temp"], ans: 2 },
+                            { q: "Which zone of flame is hottest?", options: ["Inner", "Middle", "Outer", "None"], ans: 2 },
+                            { q: "Which gas supports combustion?", options: ["Nitrogen", "Oxygen", "CO2", "Hydrogen"], ans: 1 },
+                            { q: "Ideal fuel has calorific value that is:", options: ["High", "Low", "Zero", "Moderate"], ans: 0 },
+                            { q: "Combustion of charcoal is an example of:", options: ["Rapid", "Spontaneous", "Explosion", "Slow"], ans: 3 },
+                            { q: "Incomplete combustion releases:", options: ["CO2", "CO", "O2", "N2"], ans: 1 },
+                            { q: "Substance used in fire extinguishers:", options: ["O2", "CO2", "N2", "H2"], ans: 1 },
+                            { q: "Unit of calorific value:", options: ["kJ/kg", "kg/kJ", "J/kg", "Watt"], ans: 0 },
+                            { q: "Yellow colour of flame is due to:", options: ["Complete combustion", "Incomplete combustion", "No combustion", "None"], ans: 1 },
+                            { q: "Global warming is caused by increase in:", options: ["O2", "N2", "CO2", "Ozone"], ans: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Conservation of Plants and Animals",
+                topics: [
+                    {
+                        title: "Biodiversity",
+                        subTopics: [
+                            { name: "Deforestation", desc: "Causes and consequences like desertification.", pdfUrl: "", videoUrl: "" },
+                            { name: "Protected Areas", desc: "Biosphere Reserves, National Parks, and Wildlife Sanctuaries.", pdfUrl: "", videoUrl: "" },
+                            { name: "Red Data Book", desc: "Record of endangered species.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Species found only in a particular area are:", options: ["Endangered", "Endemic", "Extinct", "Pandemic"], ans: 1 },
+                            { q: "Red Data Book contains record of:", options: ["Plants", "Animals", "Endangered Species", "Extinct Species"], ans: 2 },
+                            { q: "Pachmarhi is a:", options: ["National Park", "Biosphere Reserve", "Zoo", "Sanctuary"], ans: 1 },
+                            { q: "Cutting of trees on large scale:", options: ["Afforestation", "Deforestation", "Reforestation", "None"], ans: 1 },
+                            { q: "First Reserve Forest of India:", options: ["Satpura", "Gir", "Kaziranga", "Corbett"], ans: 0 },
+                            { q: "Project Tiger was launched to protect:", options: ["Lions", "Tigers", "Elephants", "Deer"], ans: 1 },
+                            { q: "Conversion of fertile land into desert:", options: ["Desertification", "Erosion", "Conservation", "Migration"], ans: 0 },
+                            { q: "Part of earth where life exists:", options: ["Atmosphere", "Hydrosphere", "Biosphere", "Lithosphere"], ans: 2 },
+                            { q: "Migration is the movement of:", options: ["Plants", "Birds/Animals", "Rivers", "Clouds"], ans: 1 },
+                            { q: "Replanting of destroyed forests is:", options: ["Deforestation", "Reforestation", "Logging", "None"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Reproduction in Animals",
+                topics: [
+                    {
+                        title: "Modes of Reproduction",
+                        subTopics: [
+                            { name: "Sexual Reproduction", desc: "Male/Female organs, Fertilisation (Internal/External), Viviparous vs Oviparous.", pdfUrl: "", videoUrl: "" },
+                            { name: "Asexual Reproduction", desc: "Budding in Hydra, Binary Fission in Amoeba.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Reproduction resulting from fusion of gametes:", options: ["Sexual", "Asexual", "Cloning", "Budding"], ans: 0 },
+                            { q: "Fertilisation happens inside female body:", options: ["External", "Internal", "IVF", "Test Tube"], ans: 1 },
+                            { q: "Animals that lay eggs are:", options: ["Viviparous", "Oviparous", "Mammals", "None"], ans: 1 },
+                            { q: "Asexual reproduction in Hydra is:", options: ["Fission", "Budding", "Fragmentation", "Cloning"], ans: 1 },
+                            { q: "Binary fission is seen in:", options: ["Hydra", "Amoeba", "Human", "Frog"], ans: 1 },
+                            { q: "First cloned mammal:", options: ["Dolly", "Molly", "Polly", "Holly"], ans: 0 },
+                            { q: "Tadpole develops into frog by:", options: ["Fertilisation", "Metamorphosis", "Embedding", "Budding"], ans: 1 },
+                            { q: "Male gamete is called:", options: ["Ova", "Sperm", "Zygote", "Embryo"], ans: 1 },
+                            { q: "Fusion of sperm and egg produces:", options: ["Embryo", "Zygote", "Foetus", "Infant"], ans: 1 },
+                            { q: "Number of nuclei in a zygote:", options: ["1", "2", "4", "0"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Reaching the Age of Adolescence",
+                topics: [
+                    {
+                        title: "Puberty & Hormones",
+                        subTopics: [
+                            { name: "Changes at Puberty", desc: "Height, voice change (Adam's apple), and secondary sexual characters.", pdfUrl: "", videoUrl: "" },
+                            { name: "Role of Hormones", desc: "Pituitary gland, Testosterone, Estrogen, and Menstrual cycle.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Adolescence period is also called:", options: ["Old age", "Childhood", "Teenage", "Adulthood"], ans: 2 },
+                            { q: "Male hormone is:", options: ["Estrogen", "Testosterone", "Insulin", "Thyroxine"], ans: 1 },
+                            { q: "Adam's apple is related to:", options: ["Eyes", "Voice box", "Ears", "Nose"], ans: 1 },
+                            { q: "Endocrine glands release:", options: ["Enzymes", "Blood", "Hormones", "Sweat"], ans: 2 },
+                            { q: "Stoppage of menstruation is:", options: ["Menarche", "Menopause", "Puberty", "None"], ans: 1 },
+                            { q: "Deficiency of iodine causes:", options: ["Goitre", "Diabetes", "Dwarfism", "Scurvy"], ans: 0 },
+                            { q: "Master gland is:", options: ["Thyroid", "Adrenal", "Pituitary", "Pancreas"], ans: 2 },
+                            { q: "Number of chromosome pairs in humans:", options: ["22", "23", "46", "21"], ans: 1 },
+                            { q: "Gender of baby is determined by:", options: ["Mother", "Father", "Both", "None"], ans: 1 },
+                            { q: "Pancreas produces:", options: ["Insulin", "Adrenaline", "Growth Hormone", "Thyroxine"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "Force and Pressure",
+                topics: [
+                    {
+                        title: "Force & its Effects",
+                        subTopics: [
+                            { name: "Types of Force", desc: "Contact (Muscular, Friction) and Non-contact (Magnetic, Electrostatic, Gravitational).", pdfUrl: "", videoUrl: "" },
+                            { name: "Pressure", desc: "Pressure = Force / Area. Atmospheric pressure.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Force is a:", options: ["Push or Pull", "Energy", "Work", "Power"], ans: 0 },
+                            { q: "Example of contact force:", options: ["Magnetic", "Electrostatic", "Friction", "Gravity"], ans: 2 },
+                            { q: "SI unit of pressure:", options: ["Newton", "Joule", "Pascal", "Watt"], ans: 2 },
+                            { q: "Pressure increases if area:", options: ["Increases", "Decreases", "Remains same", "Doubles"], ans: 1 },
+                            { q: "Force exerted by earth is:", options: ["Magnetic", "Electrostatic", "Gravitational", "Muscular"], ans: 2 },
+                            { q: "To draw water from well, we ____ rope.", options: ["Push", "Pull", "Throw", "Cut"], ans: 1 },
+                            { q: "Force can change:", options: ["Speed", "Shape", "Direction", "All of these"], ans: 3 },
+                            { q: "Pressure exerted by liquids depends on:", options: ["Color", "Depth", "Shape", "None"], ans: 1 },
+                            { q: "Atmospheric pressure ____ with height.", options: ["Increases", "Decreases", "Remains same", "None"], ans: 1 },
+                            { q: "Force has:", options: ["Magnitude only", "Direction only", "Both", "Neither"], ans: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 9,
+                title: "Friction",
+                topics: [
+                    {
+                        title: "Understanding Friction",
+                        subTopics: [
+                            { name: "Factors Affecting Friction", desc: "Surface smoothness and weight. Static vs Sliding vs Rolling.", pdfUrl: "", videoUrl: "" },
+                            { name: "Increasing & Reducing", desc: "Use of lubricants, ball bearings, and treads.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Friction always _____ motion.", options: ["Supports", "Opposes", "Increases", "Creates"], ans: 1 },
+                            { q: "Which friction is the least?", options: ["Static", "Sliding", "Rolling", "Fluid"], ans: 2 },
+                            { q: "Lubricants are used to:", options: ["Increase friction", "Reduce friction", "Stop motion", "Make fire"], ans: 1 },
+                            { q: "Shape of aeroplane is:", options: ["Square", "Round", "Streamlined", "Flat"], ans: 2 },
+                            { q: "Friction produces:", options: ["Heat", "Cooling", "Light", "Magnetism"], ans: 0 },
+                            { q: "Sole of shoes are grooved to:", options: ["Look good", "Increase friction", "Decrease friction", "Save material"], ans: 1 },
+                            { q: "Force of friction depends on:", options: ["Surface nature", "Weight", "Both", "None"], ans: 2 },
+                            { q: "Sprinkling powder on carrom board:", options: ["Increases friction", "Reduces friction", "No change", "Damages it"], ans: 1 },
+                            { q: "Fluid friction is called:", options: ["Drag", "Roll", "Slide", "Static"], ans: 0 },
+                            { q: "It is difficult to walk on ice because:", options: ["High friction", "Low friction", "No gravity", "Cold"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 10,
+                title: "Sound",
+                topics: [
+                    {
+                        title: "Production & Propagation",
+                        subTopics: [
+                            { name: "How Sound Travels", desc: "Vibration, requirement of a medium, human ear.", pdfUrl: "", videoUrl: "" },
+                            { name: "Characteristics", desc: "Amplitude (Loudness), Frequency (Pitch), and Noise Pollution.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Sound is produced by:", options: ["Heating", "Vibrating bodies", "Cooling", "Melting"], ans: 1 },
+                            { q: "Sound cannot travel in:", options: ["Solids", "Liquids", "Gases", "Vacuum"], ans: 3 },
+                            { q: "Unit of frequency is:", options: ["Second", "Hertz", "Meter", "Pascal"], ans: 1 },
+                            { q: "Loudness depends on:", options: ["Frequency", "Amplitude", "Time period", "Speed"], ans: 1 },
+                            { q: "Pitch is determined by:", options: ["Amplitude", "Frequency", "Loudness", "Energy"], ans: 1 },
+                            { q: "Audible range for humans:", options: ["20-2000 Hz", "20-20000 Hz", "10-1000 Hz", "None"], ans: 1 },
+                            { q: "Unpleasant sound is called:", options: ["Music", "Noise", "Note", "Tone"], ans: 1 },
+                            { q: "Voice box is also called:", options: ["Pharynx", "Larynx", "Trachea", "Oesophagus"], ans: 1 },
+                            { q: "Speed of sound is maximum in:", options: ["Air", "Water", "Steel", "Vacuum"], ans: 2 },
+                            { q: "Above ___ dB sound is painful.", options: ["40", "60", "80", "10"], ans: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 11,
+                title: "Chemical Effects of Electric Current",
+                topics: [
+                    {
+                        title: "Conduction & Electroplating",
+                        subTopics: [
+                            { name: "Conduction in Liquids", desc: "Good and poor conductors, electrolytes.", pdfUrl: "", videoUrl: "" },
+                            { name: "Electroplating", desc: "Deposition of a layer of desired metal on another material.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Which liquid conducts electricity?", options: ["Distilled water", "Lemon juice", "Oil", "Alcohol"], ans: 1 },
+                            { q: "An electrolyte is a:", options: ["Metal", "Liquid solution", "Gas", "Insulator"], ans: 1 },
+                            { q: "Electroplating is based on:", options: ["Magnetic effect", "Chemical effect", "Heating effect", "Physical effect"], ans: 1 },
+                            { q: "LED stands for:", options: ["Light Emitting Diode", "Low Energy Diode", "Light Energy Device", "None"], ans: 0 },
+                            { q: "In electroplating, object to be plated is made:", options: ["Anode", "Cathode", "Electrolyte", "Neutral"], ans: 1 },
+                            { q: "Metal used for electroplating car parts:", options: ["Iron", "Chromium", "Copper", "Gold"], ans: 1 },
+                            { q: "Distilled water is a:", options: ["Conductor", "Insulator", "Semiconductor", "None"], ans: 1 },
+                            { q: "Passage of current through liquid causes:", options: ["Chemical change", "Physical change", "No change", "Color change"], ans: 0 },
+                            { q: "To make water conductive, add:", options: ["Sugar", "Salt", "Oil", "Sand"], ans: 1 },
+                            { q: "Coating iron with zinc is:", options: ["Tinning", "Galvanisation", "Alloying", "Mixing"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 12,
+                title: "Some Natural Phenomena",
+                topics: [
+                    {
+                        title: "Lightning & Earthquakes",
+                        subTopics: [
+                            { name: "Lightning", desc: "Static charges, charge transfer, and safety measures.", pdfUrl: "", videoUrl: "" },
+                            { name: "Earthquakes", desc: "Causes, Richter scale, seismograph, and protection.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Device to detect charge:", options: ["Stethoscope", "Electroscope", "Telescope", "Microscope"], ans: 1 },
+                            { q: "Like charges:", options: ["Attract", "Repel", "No effect", "Mix"], ans: 1 },
+                            { q: "Scale to measure earthquake magnitude:", options: ["Richter", "Celsius", "Kelvin", "Meter"], ans: 0 },
+                            { q: "Sudden shaking of earth:", options: ["Tsunami", "Cyclone", "Earthquake", "Flood"], ans: 2 },
+                            { q: "Uppermost layer of earth:", options: ["Mantle", "Core", "Crust", "Magma"], ans: 2 },
+                            { q: "Instrument to record earthquake waves:", options: ["Barometer", "Seismograph", "Polygraph", "None"], ans: 1 },
+                            { q: "Lightning conductor protects buildings from:", options: ["Rain", "Lightning", "Wind", "Sun"], ans: 1 },
+                            { q: "Process of transfer of charge to earth:", options: ["Earthing", "Charging", "Induction", "Conduction"], ans: 0 },
+                            { q: "Major cause of earthquake:", options: ["Floods", "Plate movement", "Rain", "Wind"], ans: 1 },
+                            { q: "Destructive earthquakes have magnitude >", options: ["3", "4", "7", "2"], ans: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 13,
+                title: "Light",
+                topics: [
+                    {
+                        title: "Reflection & Vision",
+                        subTopics: [
+                            { name: "Laws of Reflection", desc: "Angle i = Angle r. Regular vs Diffused reflection.", pdfUrl: "", videoUrl: "" },
+                            { name: "Human Eye", desc: "Structure (Retina, Lens), defects, and Braille system.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Angle of incidence is equal to angle of reflection.", options: ["Always", "Sometimes", "Never", "Depends"], ans: 0 },
+                            { q: "Image formed by plane mirror is:", options: ["Real", "Inverted", "Virtual & Erect", "Magnified"], ans: 2 },
+                            { q: "Splitting of white light into colors:", options: ["Reflection", "Refraction", "Dispersion", "Diffraction"], ans: 2 },
+                            { q: "Part of eye that controls light entering:", options: ["Retina", "Iris", "Lens", "Cornea"], ans: 1 },
+                            { q: "Visually impaired people read using:", options: ["Braille", "Morse", "Binary", "Sign"], ans: 0 },
+                            { q: "Number of images if mirrors are parallel:", options: ["1", "2", "Infinite", "0"], ans: 2 },
+                            { q: "Beautiful patterns are seen in:", options: ["Telescope", "Kaleidoscope", "Periscope", "Microscope"], ans: 1 },
+                            { q: "Image is formed on the:", options: ["Iris", "Pupil", "Retina", "Cornea"], ans: 2 },
+                            { q: "Which cells sense color?", options: ["Rods", "Cones", "Nerve cells", "Blood cells"], ans: 1 },
+                            { q: "Sunlight consists of ___ colors.", options: ["5", "6", "7", "8"], ans: 2 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const container = document.getElementById('syllabus-container');
+
+        syllabus.forEach(chapter => {
+            const card = document.createElement('div');
+            card.className = 'chapter-card';
+            const header = document.createElement('div');
+            header.className = 'chapter-header';
+            header.innerHTML = `<div style="display:flex; align-items:center;"><i class="fas fa-flask chapter-icon"></i><span class="chapter-title">${chapter.id}. ${chapter.title}</span></div><i class="fas fa-chevron-down chevron"></i>`;
+            
+            const body = document.createElement('div');
+            body.className = 'chapter-body';
+
+            chapter.topics.forEach((topic, tIndex) => {
+                const topicDiv = document.createElement('div');
+                topicDiv.className = 'topic-item';
+                let html = `<div class="topic-title"><i class="fas fa-layer-group"></i> ${topic.title}</div>`;
+
+                topic.subTopics.forEach((sub, sIndex) => {
+                    const mediaId = `media-${chapter.id}-${tIndex}-${sIndex}`;
+                    html += `
+                        <div class="sub-topic">
+                            <div class="sub-topic-header" onclick="toggleSubTopic(this)">
+                                <span class="sub-title">${sub.name}</span>
+                                <i class="fas fa-chevron-down sub-chevron"></i>
+                            </div>
+                            <div class="sub-topic-body">
+                                <div class="sub-desc">${sub.desc}</div>
+                                <div class="media-actions">
+                                    <button onclick="toggleMedia('${sub.pdfUrl}', '${mediaId}', 'pdf')" class="btn-media btn-pdf">
+                                        <i class="fas fa-file-pdf"></i> View PDF
+                                    </button>
+                                    <button onclick="toggleMedia('${sub.videoUrl}', '${mediaId}', 'video')" class="btn-media btn-video">
+                                        <i class="fas fa-play-circle"></i> Watch Video
+                                    </button>
+                                </div>
+                                <div id="${mediaId}" class="media-content"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const quizId = `quiz-${chapter.id}-${tIndex}`;
+                html += `<div class="quiz-wrapper"><button class="btn-quiz" onclick="toggleQuiz('${quizId}')"><i class="fas fa-question-circle"></i> Take Quiz</button><div id="${quizId}" class="quiz-interface"></div></div>`;
+                topicDiv.innerHTML = html;
+                body.appendChild(topicDiv);
+            });
+
+            card.appendChild(header);
+            card.appendChild(body);
+            container.appendChild(card);
+            header.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+        });
+
+        // Toggle Sub-Topic
+        function toggleSubTopic(headerElement) {
+            const subTopicDiv = headerElement.parentElement;
+            subTopicDiv.classList.toggle('active');
+        }
+
+        // Toggle Media
+        function toggleMedia(url, elementId, type) {
+            if (!url) { alert("No link available."); return; }
+            const container = document.getElementById(elementId);
+            if (container.style.display === "block") {
+                container.style.display = "none";
+                container.innerHTML = ""; 
+                return;
+            }
+
+            let embedUrl = url;
+            if (url.includes("drive.google.com") && url.includes("/view")) {
+                embedUrl = url.replace(/\/view.*/, "/preview");
+            }
+
+            const height = (type === 'pdf') ? '800px' : '400px';
+            container.innerHTML = `<iframe src="${embedUrl}" style="height:${height}" allow="autoplay"></iframe>`;
+            container.style.display = "block";
+        }
+
+        // Quiz Logic
+        function toggleQuiz(quizId) {
+            const quizDiv = document.getElementById(quizId);
+            const ids = quizId.split('-'); 
+            const chapterData = syllabus.find(c => c.id == ids[1]);
+            const quizData = chapterData.topics[ids[2]].quiz;
+
+            if (quizDiv.style.display === 'block') { quizDiv.style.display = 'none'; return; }
+            
+            if (quizDiv.innerHTML.trim() === '') {
+                let qHtml = '';
+                quizData.forEach((q, idx) => {
+                    qHtml += `<div class="q-card" id="${quizId}-q${idx}"><span class="q-text">${idx+1}. ${q.q}</span><div class="options-list">${q.options.map((opt, oIdx) => `<label class="opt-label"><input type="radio" name="${quizId}-q${idx}" value="${oIdx}"> ${opt}</label>`).join('')}</div></div>`;
+                });
+                qHtml += `<button class="btn-quiz" style="background:var(--text-main)" onclick="submitQuiz('${quizId}')">Submit</button><div id="${quizId}-score" class="quiz-score"></div>`;
+                quizDiv.innerHTML = qHtml;
+            }
+            quizDiv.style.display = 'block';
+        }
+
+        function submitQuiz(quizId) {
+            const ids = quizId.split('-');
+            const quizQuestions = syllabus.find(c => c.id == ids[1]).topics[ids[2]].quiz;
+            let score = 0;
+            quizQuestions.forEach((q, idx) => {
+                const qDiv = document.getElementById(`${quizId}-q${idx}`);
+                const selected = qDiv.querySelector(`input[name="${quizId}-q${idx}"]:checked`);
+                const labels = qDiv.querySelectorAll('.opt-label');
+                labels.forEach(l => l.classList.remove('correct', 'wrong'));
+                if (selected) {
+                    if (parseInt(selected.value) === q.ans) { score++; selected.parentElement.classList.add('correct'); }
+                    else { selected.parentElement.classList.add('wrong'); labels[q.ans].classList.add('correct'); }
+                } else { labels[q.ans].classList.add('correct'); }
+            });
+            const sDiv = document.getElementById(`${quizId}-score`);
+            sDiv.innerText = `You Scored: ${score} / ${quizQuestions.length}`;
+            sDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
