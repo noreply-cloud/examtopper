@@ -2,42 +2,21 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Student App</title>
+    <title>EdTech App</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
       :root { --primary: #2563eb; --locked: #94a3b8; --bg: #f8fafc; --text: #1e293b; --card-bg: #ffffff; }
       * { box-sizing: border-box; }
       body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; overflow: hidden; }
       
-      /* VIEW SYSTEM */
       .view-section { height: 100%; width: 100%; position: absolute; top: 0; left: 0; background: var(--bg); overflow-y: auto; padding: 20px; display: none; padding-bottom: 50px; }
       .active-view { display: block; animation: fadeUp 0.3s ease; }
       @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-      /* AUTH */
       .auth-container { display: flex; flex-direction: column; justify-content: center; min-height: 100%; max-width: 400px; margin: 0 auto; }
-      
-      /* LOGO STYLE */
-      .app-logo { 
-        width: 150px; 
-        height: auto; 
-        display: block; 
-        margin: 0 auto 20px auto; 
-        border-radius: 12px;
-        object-fit: contain;
-      }
-
-      /* TAGLINE STYLE */
-      .auth-title { 
-        text-align: center; 
-        font-size: 22px; 
-        font-weight: 700; 
-        margin-bottom: 30px; 
-        color: #334155;
-        letter-spacing: -0.5px;
-      }
+      .app-logo { width: 150px; height: auto; display: block; margin: 0 auto 20px auto; border-radius: 12px; object-fit: contain; }
+      .auth-title { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 30px; color: #334155; }
       
       .input-wrapper { position: relative; margin-bottom: 16px; }
       .input-wrapper input { width: 100%; padding: 16px; padding-right: 45px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 16px; outline: none; background: white; }
@@ -47,7 +26,6 @@
       button.primary-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
       .link-text { text-align: center; margin-top: 15px; color: var(--primary); font-size: 14px; font-weight: 600; cursor: pointer; }
 
-      /* DASHBOARD */
       .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-top: 10px; }
       .welcome-text h2 { margin: 0; font-size: 20px; font-weight: 700; }
       .welcome-text p { margin: 4px 0 0; color: #64748b; font-size: 14px; }
@@ -62,7 +40,6 @@
       .course-card i { font-size: 28px; margin-bottom: 12px; display: block; }
       .course-card h3 { margin: 0; font-size: 15px; font-weight: 600; }
 
-      /* CONTENT & MODAL */
       .content-header { display: flex; align-items: center; margin-bottom: 20px; padding-top: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
       .back-arrow { font-size: 20px; padding: 10px; margin-left: -10px; cursor: pointer; }
       .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
@@ -71,24 +48,12 @@
     </style>
   </head>
   <body>
-
     <div id="view-login" class="view-section active-view">
       <div class="auth-container">
-        <img 
-          src="https://lh3.googleusercontent.com/d/1fcrdmfo3_FNpHt6TOSb3u9Qyu2lBweu9" 
-          class="app-logo" 
-          alt="Logo"
-          referrerpolicy="no-referrer"
-        >
-        
+        <img src="https://lh3.googleusercontent.com/d/1fcrdmfo3_FNpHt6TOSb3u9Qyu2lBweu9" class="app-logo" alt="Logo" referrerpolicy="no-referrer">
         <h2 class="auth-title">Learn. Grow. Succeed.</h2>
-        
         <div class="input-wrapper"><input type="email" id="login-email" placeholder="Email Address"></div>
-        <div class="input-wrapper">
-          <input type="password" id="login-pass" placeholder="Password">
-          <i class="fas fa-eye toggle-pass" onclick="togglePassword('login-pass', this)"></i>
-        </div>
-
+        <div class="input-wrapper"><input type="password" id="login-pass" placeholder="Password"><i class="fas fa-eye toggle-pass" onclick="togglePassword('login-pass', this)"></i></div>
         <button class="primary-btn" id="btn-signin" onclick="handleLogin()">Sign In</button>
         <div class="link-text" onclick="switchView('view-signup')">Create New Account</div>
         <div class="link-text" onclick="switchView('view-forgot')" style="font-weight:400; font-size:13px; margin-top:10px;">Forgot Password?</div>
@@ -102,10 +67,7 @@
         <div class="input-wrapper"><input type="text" id="reg-name" placeholder="Full Name"></div>
         <div class="input-wrapper"><input type="email" id="reg-email" placeholder="Email Address"></div>
         <div class="input-wrapper"><input type="tel" id="reg-phone" placeholder="Phone Number"></div>
-        <div class="input-wrapper">
-          <input type="password" id="reg-pass" placeholder="Create Password">
-          <i class="fas fa-eye toggle-pass" onclick="togglePassword('reg-pass', this)"></i>
-        </div>
+        <div class="input-wrapper"><input type="password" id="reg-pass" placeholder="Create Password"><i class="fas fa-eye toggle-pass" onclick="togglePassword('reg-pass', this)"></i></div>
         <button class="primary-btn" id="btn-signup" onclick="handleSignup()">Sign Up</button>
         <div class="link-text" onclick="history.back()">Back to Login</div>
         <div id="signup-msg" style="text-align:center; margin-top:15px; font-size:14px;"></div>
@@ -148,16 +110,15 @@
 
     <script>
       // ===========================================
-      // CONFIGURATION: UPDATED URL
+      // CONFIGURATION
       // ===========================================
       const API_URL = "https://script.google.com/macros/s/AKfycbymOiGQXyqZPR7GF6_8bdY6x1l1cMFJB_AQfJfDLqQfxoGyhwvuUt7waGEIM-OEyI1o/exec";
 
       let userPermissions = {};
       let currentUserEmail = "";
 
-      // === HISTORY & NAVIGATION ===
+      // NAVIGATION
       window.history.replaceState({view: 'view-login', subState: null}, null, '');
-
       window.onpopstate = function(e) {
         if (e.state && e.state.view) {
           if (e.state.view === 'view-content' && window.handleCourseNav) {
@@ -166,9 +127,7 @@
           } else {
              showScreen(e.state.view);
           }
-        } else {
-          showScreen('view-login');
-        }
+        } else { showScreen('view-login'); }
       };
 
       function switchView(viewId, subState = null) {
@@ -187,7 +146,7 @@
         else { input.type = "password"; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
       }
 
-      // === SCRIPT RUNNER ===
+      // SCRIPT RUNNER
       function setInnerHtmlAndRunScripts(containerId, htmlContent) {
         const container = document.getElementById(containerId);
         container.innerHTML = htmlContent;
@@ -200,8 +159,7 @@
         });
       }
 
-      // === API CALLS ===
-
+      // API FUNCTIONS
       async function handleLogin() {
         const email = document.getElementById('login-email').value;
         const pass = document.getElementById('login-pass').value;
@@ -222,13 +180,8 @@
             document.getElementById('user-greeting-name').innerText = "Hi " + data.userName;
             renderDashboard();
             switchView('view-dashboard');
-          } else {
-            msg.innerText = data.message;
-          }
-        } catch(e) {
-          btn.disabled = false; btn.innerText = "Sign In";
-          msg.innerText = "Connection Error";
-        }
+          } else { msg.innerText = data.message; }
+        } catch(e) { btn.disabled = false; msg.innerText = "Connection Error"; }
       }
 
       async function handleSignup() {
@@ -238,26 +191,15 @@
         const pass = document.getElementById('reg-pass').value;
         const btn = document.getElementById('btn-signup');
         const msg = document.getElementById('signup-msg');
-
-        if(!name || !email || !pass) { msg.style.color='red'; msg.innerText = "Fill required fields"; return; }
+        if(!name || !email || !pass) { msg.style.color='red'; msg.innerText = "Fill required"; return; }
         btn.disabled = true; btn.innerText = "Creating..."; msg.innerText = "";
-
         try {
-          const url = `${API_URL}?action=register&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&pass=${encodeURIComponent(pass)}&phone=${encodeURIComponent(phone)}`;
-          const res = await fetch(url);
+          const res = await fetch(`${API_URL}?action=register&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&pass=${encodeURIComponent(pass)}&phone=${encodeURIComponent(phone)}`);
           const data = await res.json();
           btn.disabled = false; btn.innerText = "Sign Up";
-
-          if(data.status === 'success') {
-            msg.style.color = 'green'; msg.innerText = data.message;
-            setTimeout(() => { history.back(); }, 2000);
-          } else {
-            msg.style.color = 'red'; msg.innerText = data.message;
-          }
-        } catch(e) {
-          btn.disabled = false; btn.innerText = "Sign Up";
-          msg.style.color = 'red'; msg.innerText = "Connection Error";
-        }
+          if(data.status === 'success') { msg.style.color = 'green'; msg.innerText = data.message; setTimeout(() => history.back(), 2000); }
+          else { msg.style.color = 'red'; msg.innerText = data.message; }
+        } catch(e) { btn.disabled = false; msg.innerText = "Connection Error"; }
       }
 
       async function handleLogout() {
@@ -272,15 +214,8 @@
 
       async function submitForgot() {
         const email = document.getElementById('forgot-email').value;
-        const msg = document.getElementById('forgot-msg');
-        if(!email) return;
-        msg.style.color = "blue"; msg.innerText = "Sending...";
-        try {
-          const res = await fetch(`${API_URL}?action=forgot&email=${encodeURIComponent(email)}`);
-          const data = await res.json();
-          msg.style.color = data.status === 'success' ? 'green' : 'red';
-          msg.innerText = data.message;
-        } catch(e) { msg.innerText = "Error connecting."; }
+        if(email) fetch(`${API_URL}?action=forgot&email=${encodeURIComponent(email)}`);
+        document.getElementById('forgot-msg').innerText = "Request Sent";
       }
 
       function renderDashboard() {
@@ -299,7 +234,7 @@
 
       async function openCourse(classKey, label) {
         document.getElementById('current-course-title').innerText = label;
-        document.getElementById('content-body').innerHTML = `<div style="text-align:center; margin-top:50px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
+        document.getElementById('content-body').innerHTML = `<div style="text-align:center; margin-top:50px;"><i class="fas fa-spinner fa-spin"></i> Loading AI...</div>`;
         window.handleCourseNav = null;
         switchView('view-content', { section: 'home' });
 
@@ -308,12 +243,8 @@
           const data = await res.json();
           if(data.status === 'success') {
             setInnerHtmlAndRunScripts('content-body', data.html);
-          } else {
-            document.getElementById('content-body').innerHTML = "<p>Content Unavailable.</p>";
-          }
-        } catch(e) {
-          document.getElementById('content-body').innerHTML = "<p>Connection error.</p>";
-        }
+          } else { document.getElementById('content-body').innerHTML = "<p>Content Unavailable.</p>"; }
+        } catch(e) { document.getElementById('content-body').innerHTML = "<p>Connection error.</p>"; }
       }
 
       function showPaywall() { document.getElementById('paywall-modal').style.display = "flex"; }
