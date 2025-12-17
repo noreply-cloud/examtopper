@@ -1,1 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Class 8 Mathematics</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DESIGN TO MATCH YOUR INDEX.HTML --- */
+        :root {
+            /* Extracted Logo Blue */
+            --primary: #3F72F4; 
+            --primary-dark: #2a5bc9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
 
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 40px; }
+
+        /* HEADER */
+        header {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .back-btn { font-size: 18px; color: var(--text-main); text-decoration: none; cursor: pointer; }
+        h1 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); }
+
+        /* MAIN CONTAINER */
+        main { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+        /* CHAPTER CARD */
+        .chapter-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        
+        .chapter-header {
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+        }
+
+        .chapter-header:active { background-color: #f1f5f9; }
+
+        .chapter-title { font-weight: 700; font-size: 16px; color: var(--text-main); }
+        .chapter-icon { color: var(--primary); font-size: 18px; margin-right: 10px; }
+        .chevron { color: var(--text-sub); transition: transform 0.3s; }
+        .chapter-card.active .chevron { transform: rotate(180deg); }
+
+        /* TOPICS CONTAINER */
+        .chapter-body { display: none; background: #f8fafc; border-top: 1px solid var(--border); }
+        .chapter-card.active .chapter-body { display: block; }
+
+        /* TOPIC ITEM */
+        .topic-item { padding: 20px; border-bottom: 1px solid var(--border); background: white; margin-bottom: 10px; }
+        .topic-title { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; }
+        .topic-title i { margin-right: 8px; }
+
+        /* SUB-TOPIC */
+        .sub-topic {
+            margin-left: 10px;
+            padding-left: 15px;
+            border-left: 2px solid var(--border);
+            margin-bottom: 15px;
+        }
+        .sub-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .sub-desc { font-size: 13px; color: var(--text-sub); line-height: 1.5; margin-bottom: 10px; }
+
+        /* MEDIA BUTTONS */
+        .media-actions { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-media {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+        .btn-media:active { opacity: 0.8; }
+        .btn-pdf { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-video { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+
+        /* QUIZ SECTION */
+        .quiz-wrapper { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border); }
+        .btn-quiz {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* QUIZ INTERFACE (Hidden by default) */
+        .quiz-interface { display: none; margin-top: 15px; background: #f1f5f9; padding: 15px; border-radius: 8px; }
+        .q-card { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #cbd5e1; }
+        .q-text { font-weight: 600; font-size: 14px; margin-bottom: 10px; display: block; }
+        
+        .opt-label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .opt-label input { margin-right: 10px; accent-color: var(--primary); }
+        
+        .opt-label.correct { background: #dcfce7; border-color: var(--success); color: #166534; }
+        .opt-label.wrong { background: #fee2e2; border-color: var(--error); color: #991b1b; }
+
+        .quiz-score { 
+            text-align: center; 
+            font-weight: 700; 
+            padding: 15px; 
+            background: var(--text-main); 
+            color: white; 
+            border-radius: 8px; 
+            margin-top: 10px;
+            display: none; 
+        }
+
+        @media (max-width: 400px) {
+            h1 { font-size: 16px; }
+            .chapter-header { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <h1>Class 8 Mathematics</h1>
+    </header>
+
+    <main id="syllabus-container"></main>
+
+    <script>
+        // ===============================================
+        //  DATA STRUCTURE: EDIT URLS HERE
+        // ===============================================
+        
+        /* INSTRUCTIONS:
+           1. Paste your PDF links in 'pdfUrl'
+           2. Paste your Video links in 'videoUrl'
+           3. If a link is empty "", the button will show an alert.
+        */
+
+        const syllabus = [
+            {
+                id: 1,
+                title: "Rational Numbers",
+                topics: [
+                    {
+                        title: "Properties of Rational Numbers",
+                        subTopics: [
+                            { 
+                                name: "Closure & Commutativity", 
+                                desc: "Understanding how rational numbers behave under addition, subtraction, multiplication, and division.",
+                                pdfUrl: "", // INSERT PDF URL HERE
+                                videoUrl: "" // INSERT VIDEO URL HERE
+                            },
+                            { 
+                                name: "Associativity & Distributivity", 
+                                desc: "The role of zero, the role of 1, negative of a number, and reciprocal.",
+                                pdfUrl: "",
+                                videoUrl: ""
+                            }
+                        ],
+                        // 10 Question Quiz for this Topic
+                        quiz: [
+                            { q: "Rational numbers are closed under subtraction.", options: ["True", "False"], ans: 0 },
+                            { q: "Multiplicative identity for rational numbers is:", options: ["0", "1", "-1", "None"], ans: 1 },
+                            { q: "Additive inverse of -7/19 is:", options: ["7/19", "-7/19", "19/7", "0"], ans: 0 },
+                            { q: "Reciprocal of -5 is:", options: ["5", "1/5", "-1/5", "1"], ans: 2 },
+                            { q: "a(b+c) = ab + ac is called:", options: ["Associative", "Commutative", "Distributive", "Closure"], ans: 2 },
+                            { q: "The product of two rational numbers is always:", options: ["Integer", "Rational", "Irrational", "Whole"], ans: 1 },
+                            { q: "Is division commutative for rational numbers?", options: ["Yes", "No", "Sometimes", "Unknown"], ans: 1 },
+                            { q: "0 is the ________ identity.", options: ["Multiplicative", "Additive", "Subtractive", "Divisive"], ans: 1 },
+                            { q: "Which number has no reciprocal?", options: ["1", "-1", "0", "2"], ans: 2 },
+                            { q: "Standard form of 36/-24 is:", options: ["-3/2", "3/2", "-2/3", "2/3"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Linear Equations in One Variable",
+                topics: [
+                    {
+                        title: "Solving Equations",
+                        subTopics: [
+                            { 
+                                name: "Variable on one side", 
+                                desc: "Methods to solve linear equations having the variable on only one side.",
+                                pdfUrl: "", 
+                                videoUrl: "" 
+                            },
+                            { 
+                                name: "Variable on both sides", 
+                                desc: "Techniques for solving equations where variables appear on both LHS and RHS.",
+                                pdfUrl: "", 
+                                videoUrl: "" 
+                            }
+                        ],
+                        quiz: [
+                            { q: "Solution of 2x - 3 = 7 is:", options: ["5", "2", "4", "3"], ans: 0 },
+                            { q: "If 5t - 3 = 3t - 5, then t = ?", options: ["-1", "1", "0", "2"], ans: 0 },
+                            { q: "The degree of a linear equation is:", options: ["0", "1", "2", "3"], ans: 1 },
+                            { q: "A linear equation has how many solutions?", options: ["One", "Two", "Infinite", "None"], ans: 0 },
+                            { q: "Solve: x/3 + 1 = 7/15", options: ["-8/5", "8/5", "2/5", "-2/5"], ans: 0 },
+                            { q: "Three consecutive integers sum to 51. The middle one is:", options: ["16", "17", "18", "15"], ans: 1 },
+                            { q: "Sum of two numbers is 95. One exceeds other by 15. The smaller number is:", options: ["40", "55", "35", "45"], ans: 0 },
+                            { q: "Value of x in 4z + 3 = 6 + 2z", options: ["1.5", "2", "3", "0"], ans: 0 },
+                            { q: "Solving means finding the value of the:", options: ["Constant", "Variable", "Equation", "Term"], ans: 1 },
+                            { q: "Process of moving terms to other side is called:", options: ["Translation", "Transposition", "Transformation", "Transition"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Understanding Quadrilaterals",
+                topics: [
+                    {
+                        title: "Polygons & Properties",
+                        subTopics: [
+                            { 
+                                name: "Classification of Polygons", 
+                                desc: "Convex, Concave, Regular and Irregular polygons.",
+                                pdfUrl: "", videoUrl: "" 
+                            },
+                            { 
+                                name: "Angle Sum Property", 
+                                desc: "Sum of interior angles = (n-2)×180°. Sum of exterior angles = 360°.",
+                                pdfUrl: "", videoUrl: "" 
+                            }
+                        ],
+                        quiz: [
+                            { q: "Sum of exterior angles of any polygon is:", options: ["180°", "360°", "540°", "90°"], ans: 1 },
+                            { q: "A quadrilateral with 1 pair of parallel sides:", options: ["Square", "Trapezium", "Kite", "Rhombus"], ans: 1 },
+                            { q: "Number of diagonals in a triangle:", options: ["0", "1", "2", "3"], ans: 0 },
+                            { q: "Regular polygon with 4 sides is:", options: ["Rhombus", "Rectangle", "Square", "Kite"], ans: 2 },
+                            { q: "Minimum interior angle for regular polygon:", options: ["45°", "60°", "90°", "120°"], ans: 1 },
+                            { q: "Adjacent angles of a parallelogram are:", options: ["Equal", "Complementary", "Supplementary", "90°"], ans: 2 },
+                            { q: "Diagonals of a rhombus intersect at:", options: ["30°", "60°", "90°", "45°"], ans: 2 },
+                            { q: "Sum of interior angles of a pentagon:", options: ["360", "540", "720", "180"], ans: 1 },
+                            { q: "A parallelogram with equal sides:", options: ["Rectangle", "Rhombus", "Trapezium", "Kite"], ans: 1 },
+                            { q: "Opposite angles of a parallelogram are:", options: ["Equal", "Unequal", "Supplementary", "Complementary"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Data Handling",
+                topics: [
+                    {
+                        title: "Organising Data",
+                        subTopics: [
+                            { name: "Frequency Distribution", desc: "Grouping raw data into tables.", pdfUrl: "", videoUrl: "" },
+                            { name: "Histograms", desc: "Visual representation of grouped data.", pdfUrl: "", videoUrl: "" },
+                            { name: "Pie Charts", desc: "Circle graphs showing parts of a whole.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "In a histogram, bars are:", options: ["Separated", "Touching", "Dotted", "Circular"], ans: 1 },
+                            { q: "Total angle at center of pie chart:", options: ["180", "90", "360", "270"], ans: 2 },
+                            { q: "Difference between upper and lower limit:", options: ["Class Size", "Class Mark", "Frequency", "Range"], ans: 0 },
+                            { q: "Probability of sure event:", options: ["0", "1", "0.5", "100"], ans: 1 },
+                            { q: "Data represented by circle:", options: ["Bar graph", "Pie chart", "Histogram", "Line graph"], ans: 1 },
+                            { q: "Tally marks are used for:", options: ["Frequency", "Class limit", "Range", "Mean"], ans: 0 },
+                            { q: "Probability of head in a coin toss:", options: ["1", "0", "1/2", "1/4"], ans: 2 },
+                            { q: "Number of outcomes in throwing a die:", options: ["2", "4", "6", "8"], ans: 2 },
+                            { q: "Unorganized data is called:", options: ["Raw data", "Grouped data", "Secondary data", "Primary data"], ans: 0 },
+                            { q: "Class mark of 10-20 is:", options: ["10", "15", "20", "30"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Squares and Square Roots",
+                topics: [
+                    {
+                        title: "Finding Squares",
+                        subTopics: [
+                            { name: "Properties of Squares", desc: "Ending digits, patterns, and Pythagorean triplets.", pdfUrl: "", videoUrl: "" },
+                            { name: "Finding Roots", desc: "Repeated subtraction, Prime Factorisation, and Division Method.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Square of an even number is:", options: ["Odd", "Even", "Prime", "Fraction"], ans: 1 },
+                            { q: "Unit digit of square of 79:", options: ["1", "9", "7", "3"], ans: 0 },
+                            { q: "Which is NOT a perfect square?", options: ["121", "144", "160", "225"], ans: 2 },
+                            { q: "Number of zeros in square of 400:", options: ["2", "3", "4", "6"], ans: 2 },
+                            { q: "Square root of 196:", options: ["12", "14", "16", "13"], ans: 1 },
+                            { q: "Smallest Ramanujan number:", options: ["1729", "1296", "1000", "729"], ans: 0 },
+                            { q: "Value of 9² - 8²:", options: ["17", "1", "81", "64"], ans: 0 },
+                            { q: "Inverse operation of square is:", options: ["Cube", "Square Root", "Divide", "Multiply"], ans: 1 },
+                            { q: "Sum of first n odd natural numbers:", options: ["n", "2n", "n²", "n+1"], ans: 2 },
+                            { q: "Is 1000 a perfect square?", options: ["Yes", "No", "Maybe", "None"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Cubes and Cube Roots",
+                topics: [
+                    {
+                        title: "Cubes",
+                        subTopics: [
+                            { name: "Properties", desc: "Hardy-Ramanujan Number, Patterns in cubes.", pdfUrl: "", videoUrl: "" },
+                            { name: "Cube Roots", desc: "Finding cube roots via prime factorisation.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Cube of 2 is:", options: ["4", "6", "8", "16"], ans: 2 },
+                            { q: "Cube of an odd number is:", options: ["Odd", "Even", "Prime", "Zero"], ans: 0 },
+                            { q: "Cube root of 1000:", options: ["10", "100", "1", "50"], ans: 0 },
+                            { q: "One's digit of cube of 23:", options: ["3", "7", "9", "6"], ans: 1 },
+                            { q: "Smallest perfect cube:", options: ["0", "1", "8", "4"], ans: 1 },
+                            { q: "Volume of cube with side 3:", options: ["9", "18", "27", "81"], ans: 2 },
+                            { q: "Cube root of -64:", options: ["4", "-4", "8", "-8"], ans: 1 },
+                            { q: "Is 216 a perfect cube?", options: ["Yes", "No", "Maybe", "Check"], ans: 0 },
+                            { q: "By what number should 4 be multiplied to be a cube?", options: ["4", "8", "2", "16"], ans: 2 },
+                            { q: "Symbol for cube root:", options: ["√", "∛", "∜", "²√"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Comparing Quantities",
+                topics: [
+                    {
+                        title: "Ratios & Interest",
+                        subTopics: [
+                            { name: "Percentage & Discounts", desc: "Finding profit, loss, discount, and sales tax/GST.", pdfUrl: "", videoUrl: "" },
+                            { name: "Compound Interest", desc: "Formula A = P(1 + R/100)^n and annual/half-yearly compounding.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Ratio of 50 paise to 5 Rs:", options: ["1:10", "10:1", "1:5", "5:1"], ans: 0 },
+                            { q: "75% of 12:", options: ["6", "8", "9", "10"], ans: 2 },
+                            { q: "Profit % is calculated on:", options: ["SP", "CP", "MP", "Discount"], ans: 1 },
+                            { q: "Discount is calculated on:", options: ["CP", "SP", "Marked Price", "Profit"], ans: 2 },
+                            { q: "Formula for SI:", options: ["PRT/100", "P(1+R)", "P+I", "None"], ans: 0 },
+                            { q: "Amount - Principal =", options: ["Rate", "Time", "Interest", "Loss"], ans: 2 },
+                            { q: "Convert 3:4 to %:", options: ["50%", "75%", "25%", "60%"], ans: 1 },
+                            { q: "In CI, interest is calculated on:", options: ["Original P only", "Amount of prev year", "SI", "None"], ans: 1 },
+                            { q: "Half yearly rate for 10% p.a is:", options: ["10%", "20%", "5%", "2.5%"], ans: 2 },
+                            { q: "Sales tax is added to:", options: ["Bill Amount", "Cost Price", "Profit", "Loss"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "Algebraic Expressions",
+                topics: [
+                    {
+                        title: "Operations & Identities",
+                        subTopics: [
+                            { name: "Polynomials", desc: "Monomials, Binomials, and Polynomials. Like and Unlike terms.", pdfUrl: "", videoUrl: "" },
+                            { name: "Identities", desc: "(a+b)², (a-b)², (a+b)(a-b) and (x+a)(x+b).", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Terms having same variables and powers:", options: ["Unlike", "Like", "Mono", "Poly"], ans: 1 },
+                            { q: "Coefficient of x in -7xy:", options: ["7", "-7", "-7y", "y"], ans: 2 },
+                            { q: "Number of terms in a binomial:", options: ["1", "2", "3", "4"], ans: 1 },
+                            { q: "(a+b)(a-b) =", options: ["a²+b²", "a²-b²", "a²-2ab+b²", "2a"], ans: 1 },
+                            { q: "Value of (3x)² is:", options: ["3x²", "9x²", "6x", "9x"], ans: 1 },
+                            { q: "Product of 4p and 0:", options: ["4p", "4", "0", "p"], ans: 2 },
+                            { q: "Degree of x²y + xy:", options: ["2", "3", "1", "4"], ans: 1 },
+                            { q: "Volume of rect box (l, b, h):", options: ["l+b+h", "lbh", "2(lb+bh)", "None"], ans: 1 },
+                            { q: "Standard identity (a-b)²:", options: ["a²+b²", "a²-2ab+b²", "a²+2ab+b²", "a²-b²"], ans: 1 },
+                            { q: "Value of 103 × 104 using (x+a)(x+b):", options: ["10712", "10000", "10700", "12000"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 9,
+                title: "Mensuration",
+                topics: [
+                    {
+                        title: "Area & Volume",
+                        subTopics: [
+                            { name: "Area of Shapes", desc: "Trapezium, General Quadrilateral, Rhombus.", pdfUrl: "", videoUrl: "" },
+                            { name: "Solid Shapes", desc: "Surface Area and Volume of Cube, Cuboid and Cylinder.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Area of trapezium:", options: ["1/2(a+b)h", "l×b", "1/2×d1×d2", "side²"], ans: 0 },
+                            { q: "TSA of cube:", options: ["4a²", "6a²", "a³", "2a²"], ans: 1 },
+                            { q: "Volume of cylinder:", options: ["2πrh", "πr²h", "πr³", "2πr"], ans: 1 },
+                            { q: "1 m³ = ___ litres:", options: ["100", "1000", "10", "10000"], ans: 1 },
+                            { q: "LSA of cuboid:", options: ["2h(l+b)", "lbh", "2(lb+bh+hl)", "6l²"], ans: 0 },
+                            { q: "Area of Rhombus:", options: ["d1×d2", "1/2×d1×d2", "d1+d2", "2(d1+d2)"], ans: 1 },
+                            { q: "If side of cube doubles, vol becomes:", options: ["2x", "4x", "8x", "16x"], ans: 2 },
+                            { q: "CSA of cylinder:", options: ["2πrh", "πr²h", "2πr", "None"], ans: 0 },
+                            { q: "Perimeter of circle:", options: ["Area", "Circumference", "Diameter", "Radius"], ans: 1 },
+                            { q: "Base area of cylinder:", options: ["Square", "Circle", "Rectangle", "Triangle"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 10,
+                title: "Exponents and Powers",
+                topics: [
+                    {
+                        title: "Laws of Exponents",
+                        subTopics: [
+                            { name: "Powers with Negatives", desc: "Understanding a⁻ᵐ = 1/aᵐ.", pdfUrl: "", videoUrl: "" },
+                            { name: "Standard Form", desc: "Expressing very small and large numbers using exponents.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "a⁰ =", options: ["0", "1", "a", "-1"], ans: 1 },
+                            { q: "Value of 2⁻³:", options: ["-8", "1/8", "-6", "1/6"], ans: 1 },
+                            { q: "aᵐ × aⁿ =", options: ["aᵐⁿ", "aᵐ⁺ⁿ", "aᵐ⁻ⁿ", "a"], ans: 1 },
+                            { q: "(aᵐ)ⁿ =", options: ["aᵐ⁺ⁿ", "aᵐⁿ", "aᵐ⁻ⁿ", "a"], ans: 1 },
+                            { q: "Standard form of 0.0003:", options: ["3×10⁻⁴", "3×10⁴", "3×10⁻³", "0.3×10⁻³"], ans: 0 },
+                            { q: "10⁻¹ =", options: ["10", "1/10", "-10", "1"], ans: 1 },
+                            { q: "Multiplicative inverse of 5⁻²:", options: ["5²", "-5²", "1/5²", "5"], ans: 0 },
+                            { q: "Usually 2⁸ ÷ 2⁵ =", options: ["2³", "2¹³", "2⁴", "2"], ans: 0 },
+                            { q: "(-1) even power =", options: ["-1", "1", "0", "None"], ans: 1 },
+                            { q: "Express 1000 as power of 10:", options: ["10²", "10³", "10⁴", "10¹"], ans: 1 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 11,
+                title: "Direct and Inverse Proportions",
+                topics: [
+                    {
+                        title: "Proportions",
+                        subTopics: [
+                            { name: "Direct Proportion", desc: "x/y = k. When one increases, other increases.", pdfUrl: "", videoUrl: "" },
+                            { name: "Inverse Proportion", desc: "xy = k. When one increases, other decreases.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Speed and Time are in:", options: ["Direct Prop", "Inverse Prop", "No relation", "None"], ans: 1 },
+                            { q: "Cost and Quantity are in:", options: ["Direct", "Inverse", "Neither", "Both"], ans: 0 },
+                            { q: "For direct prop, x/y is:", options: ["Constant", "Variable", "Zero", "One"], ans: 0 },
+                            { q: "For inverse prop, xy is:", options: ["Constant", "Variable", "Zero", "One"], ans: 0 },
+                            { q: "If 5 pens cost 25, 10 pens cost:", options: ["50", "40", "100", "250"], ans: 0 },
+                            { q: "More workers, ____ time:", options: ["More", "Less", "Same", "Zero"], ans: 1 },
+                            { q: "Symbol for proportional:", options: ["=", "∝", "||", "~"], ans: 1 },
+                            { q: "Distance covered and Petrol used:", options: ["Direct", "Inverse", "No relation", "None"], ans: 0 },
+                            { q: "Side of square and Area:", options: ["Direct", "Inverse", "Not direct", "None"], ans: 2 },
+                            { q: "x=10, y=20; x=20, y=40 is:", options: ["Direct", "Inverse", "Both", "None"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 12,
+                title: "Factorisation",
+                topics: [
+                    {
+                        title: "Methods",
+                        subTopics: [
+                            { name: "Grouping & Identities", desc: "Common factors, Regrouping, and using Standard Identities.", pdfUrl: "", videoUrl: "" },
+                            { name: "Division", desc: "Dividing polynomials by monomials and other polynomials.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Common factor of 2x, 4y:", options: ["2", "x", "y", "4"], ans: 0 },
+                            { q: "Factorise x²-9:", options: ["(x-3)²", "(x+3)(x-3)", "(x+9)(x-9)", "x(x-9)"], ans: 1 },
+                            { q: "Divide 10x by 2:", options: ["5x", "5", "2x", "x"], ans: 0 },
+                            { q: "Factors of a² + 2ab + b²:", options: ["(a-b)²", "(a+b)²", "a²+b²", "a-b"], ans: 1 },
+                            { q: "Irreducible factor of 3xy:", options: ["3xy", "3,x,y", "3x", "y"], ans: 1 },
+                            { q: "Factorisation is reverse of:", options: ["Addition", "Subtraction", "Multiplication", "Division"], ans: 2 },
+                            { q: "Common factor in 5x + 10:", options: ["5", "x", "10", "5x"], ans: 0 },
+                            { q: "Quotient of x²/x:", options: ["x", "1", "0", "x²"], ans: 0 },
+                            { q: "Number of factors of (x+y)²:", options: ["1", "2", "3", "0"], ans: 1 },
+                            { q: "Value of 98²-2²:", options: ["(100)(96)", "10000", "9600", "9604"], ans: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 13,
+                title: "Introduction to Graphs",
+                topics: [
+                    {
+                        title: "Coordinates",
+                        subTopics: [
+                            { name: "Types of Graphs", desc: "Bar graph, Pie graph, Histogram, Line graph.", pdfUrl: "", videoUrl: "" },
+                            { name: "Cartesian Plane", desc: "Plotting points (x, y), Axes, Origin.", pdfUrl: "", videoUrl: "" }
+                        ],
+                        quiz: [
+                            { q: "Point (0,0) is called:", options: ["X-axis", "Y-axis", "Origin", "Quadrant"], ans: 2 },
+                            { q: "In (3, 5), ordinate is:", options: ["3", "5", "0", "8"], ans: 1 },
+                            { q: "Horizontal axis is:", options: ["X-axis", "Y-axis", "Z-axis", "None"], ans: 0 },
+                            { q: "Point (2,0) lies on:", options: ["X-axis", "Y-axis", "Origin", "Quadrant I"], ans: 0 },
+                            { q: "Graph showing change over time:", options: ["Bar", "Pie", "Line", "Histogram"], ans: 2 },
+                            { q: "Abscissa of (4, -2):", options: ["4", "-2", "2", "0"], ans: 0 },
+                            { q: "Point (0, 5) lies on:", options: ["X-axis", "Y-axis", "Origin", "None"], ans: 1 },
+                            { q: "A line graph that is a straight line:", options: ["Linear Graph", "Bar Graph", "Pie Chart", "None"], ans: 0 },
+                            { q: "How many quadrants are there?", options: ["2", "4", "6", "8"], ans: 1 },
+                            { q: "Independent variable is on:", options: ["X-axis", "Y-axis", "Both", "None"], ans: 0 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // ===============================================
+        //  APP LOGIC (DO NOT EDIT BELOW)
+        // ===============================================
+
+        const container = document.getElementById('syllabus-container');
+
+        // Render Syllabus
+        syllabus.forEach(chapter => {
+            const card = document.createElement('div');
+            card.className = 'chapter-card';
+
+            // 1. Chapter Header
+            const header = document.createElement('div');
+            header.className = 'chapter-header';
+            header.innerHTML = `
+                <div style="display:flex; align-items:center;">
+                    <i class="fas fa-book chapter-icon"></i>
+                    <span class="chapter-title">${chapter.id}. ${chapter.title}</span>
+                </div>
+                <i class="fas fa-chevron-down chevron"></i>
+            `;
+
+            // 2. Chapter Body
+            const body = document.createElement('div');
+            body.className = 'chapter-body';
+
+            chapter.topics.forEach((topic, tIndex) => {
+                const topicDiv = document.createElement('div');
+                topicDiv.className = 'topic-item';
+
+                // Topic Title
+                let html = `<div class="topic-title"><i class="fas fa-layer-group"></i> ${topic.title}</div>`;
+
+                // Subtopics with Media Buttons
+                topic.subTopics.forEach(sub => {
+                    html += `
+                        <div class="sub-topic">
+                            <div class="sub-title">${sub.name}</div>
+                            <div class="sub-desc">${sub.desc}</div>
+                            <div class="media-actions">
+                                <a href="#" onclick="openLink('${sub.pdfUrl}', 'PDF')" class="btn-media btn-pdf">
+                                    <i class="fas fa-file-pdf"></i> View PDF
+                                </a>
+                                <a href="#" onclick="openLink('${sub.videoUrl}', 'Video')" class="btn-media btn-video">
+                                    <i class="fas fa-play-circle"></i> Watch Video
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Quiz Section
+                const quizId = `quiz-${chapter.id}-${tIndex}`;
+                html += `
+                    <div class="quiz-wrapper">
+                        <button class="btn-quiz" onclick="toggleQuiz('${quizId}')">
+                            <i class="fas fa-question-circle"></i> Take 10-Question Quiz
+                        </button>
+                        <div id="${quizId}" class="quiz-interface">
+                            </div>
+                    </div>
+                `;
+
+                topicDiv.innerHTML = html;
+                body.appendChild(topicDiv);
+            });
+
+            // Assemble
+            card.appendChild(header);
+            card.appendChild(body);
+            container.appendChild(card);
+
+            // Accordion Click
+            header.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+        });
+
+        // Function to handle Media Links
+        function openLink(url, type) {
+            event.preventDefault();
+            if(url && url.length > 0) {
+                window.open(url, '_blank');
+            } else {
+                alert(`No ${type} link added for this topic yet.`);
+            }
+        }
+
+        // Function to Toggle and Render Quiz
+        function toggleQuiz(quizId) {
+            const quizDiv = document.getElementById(quizId);
+            const ids = quizId.split('-'); // quiz-1-0 (Chapter 1, Topic 0)
+            const chapterIdx = parseInt(ids[1]) - 1; // Array index correction if needed, but here ID matches
+            const topicIdx = parseInt(ids[2]);
+
+            // Find the specific quiz data
+            // Note: syllabus array index is 0-based, ID is 1-based. 
+            // We search by ID to be safe.
+            const chapterData = syllabus.find(c => c.id == ids[1]);
+            const quizData = chapterData.topics[topicIdx].quiz;
+
+            if (quizDiv.style.display === 'block') {
+                quizDiv.style.display = 'none';
+                return;
+            }
+
+            // Render Questions only if empty (first load)
+            if (quizDiv.innerHTML.trim() === '') {
+                let qHtml = '';
+                quizData.forEach((q, idx) => {
+                    qHtml += `
+                        <div class="q-card" id="${quizId}-q${idx}">
+                            <span class="q-text">${idx + 1}. ${q.q}</span>
+                            <div class="options-list">
+                                ${q.options.map((opt, oIdx) => `
+                                    <label class="opt-label">
+                                        <input type="radio" name="${quizId}-q${idx}" value="${oIdx}">
+                                        ${opt}
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                qHtml += `<button class="btn-quiz" style="background:var(--text-main)" onclick="submitQuiz('${quizId}')">Submit Answers</button>`;
+                qHtml += `<div id="${quizId}-score" class="quiz-score"></div>`;
+                quizDiv.innerHTML = qHtml;
+            }
+
+            quizDiv.style.display = 'block';
+        }
+
+        // Function to Score Quiz
+        function submitQuiz(quizId) {
+            const ids = quizId.split('-');
+            const chapterData = syllabus.find(c => c.id == ids[1]);
+            const topicIdx = parseInt(ids[2]);
+            const quizQuestions = chapterData.topics[topicIdx].quiz;
+            
+            let score = 0;
+            
+            quizQuestions.forEach((q, idx) => {
+                const qDiv = document.getElementById(`${quizId}-q${idx}`);
+                const selected = qDiv.querySelector(`input[name="${quizId}-q${idx}"]:checked`);
+                const labels = qDiv.querySelectorAll('.opt-label');
+
+                // Reset styles
+                labels.forEach(l => l.classList.remove('correct', 'wrong'));
+
+                if (selected) {
+                    const val = parseInt(selected.value);
+                    if (val === q.ans) {
+                        score++;
+                        selected.parentElement.classList.add('correct');
+                    } else {
+                        selected.parentElement.classList.add('wrong');
+                        // Highlight correct
+                        labels[q.ans].classList.add('correct');
+                    }
+                } else {
+                     // Highlight correct if skipped
+                     labels[q.ans].classList.add('correct');
+                }
+            });
+
+            const scoreDiv = document.getElementById(`${quizId}-score`);
+            scoreDiv.innerText = `You Scored: ${score} / ${quizQuestions.length}`;
+            scoreDiv.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>
