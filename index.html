@@ -6,31 +6,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --navy: #002147; --gold: #FFB800; --bg: #ffffff; }
+        :root { --navy: #002147; --bg: #ffffff; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body, html { height: 100%; margin: 0; background: var(--bg); font-family: 'Poppins', sans-serif; overflow: hidden; }
-        
-        .view { display: none; height: 100vh; width: 100vw; padding: 30px; flex-direction: column; align-items: center; justify-content: center; background: white; }
+        .view { display: none; height: 100vh; width: 100vw; padding: 30px; flex-direction: column; align-items: center; justify-content: center; }
         .active { display: flex; }
         .auth-card { width: 100%; max-width: 350px; text-align: center; }
-        
-        .logo { width: 110px; height: 110px; margin-bottom: 10px; border-radius: 50%; border: 3px solid var(--navy); }
-        .input-box { width: 100%; margin-bottom: 15px; position: relative; }
-        .input-box input { width: 100%; padding: 16px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 15px; outline: none; background: #fafafa; transition: 0.3s; }
-        .input-box input:focus { border-color: var(--navy); background: #fff; }
+        .logo { width: 100px; height: 100px; margin-bottom: 10px; border-radius: 50%; border: 2px solid var(--navy); }
+        .input-group { width: 100%; margin-bottom: 15px; position: relative; }
+        .input-group input { width: 100%; padding: 16px; border: 2px solid #f1f5f9; border-radius: 12px; outline: none; background: #fafafa; width: 100%; font-size: 15px; }
         .eye { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
-
-        .btn { width: 100%; padding: 16px; background: var(--navy); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; }
-        .btn:active { transform: scale(0.98); }
-        
-        /* Dashboard */
-        #v-dash { align-items: stretch; justify-content: flex-start; overflow-y: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #f1f5f9; margin-bottom: 20px; }
-        .class-card { display: flex; align-items: center; padding: 20px; border-radius: 15px; background: #fff; border: 2px solid #f1f5f9; margin-bottom: 12px; }
-        .class-card.locked { opacity: 0.5; background: #f8fafc; }
-        .c-icon { margin-right: 15px; font-size: 22px; color: var(--navy); }
-        
-        #msg-l, #msg-s, #msg-f { margin-top: 15px; font-size: 13px; font-weight: 600; line-height: 1.4; }
+        .btn { width: 100%; padding: 16px; background: var(--navy); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; width: 100%; position: fixed; top: 0; background: white; }
+        #v-dash { justify-content: flex-start; padding-top: 100px; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -39,132 +27,118 @@
         <div class="auth-card">
             <img src="https://lh3.googleusercontent.com/d/1obO5_MsRtrX8xqGW4JfymBqbkOuIOmJ2" class="logo">
             <h2 style="color:var(--navy); margin:0;">ExamTopper</h2>
-            <p style="color:#64748b; font-size:13px; margin-bottom:25px;">Learning made simple</p>
-            <div class="input-box"><input type="email" id="l-email" placeholder="Email Address"></div>
-            <div class="input-box">
+            <div class="input-group"><input type="email" id="l-email" placeholder="Email Address"></div>
+            <div class="input-group">
                 <input type="password" id="l-pass" placeholder="Password">
-                <i class="fas fa-eye eye" onclick="toggle('l-pass', this)"></i>
+                <i class="fas fa-eye eye" onclick="togglePass('l-pass', this)"></i>
             </div>
-            <button class="btn" onclick="login()">Login</button>
-            <p style="font-size:13px; margin-top:20px;">Don't have an account? <b onclick="show('v-signup')" style="color:var(--navy)">Sign Up</b></p>
-            <p onclick="show('v-forgot')" style="font-size:12px; color:#94a3b8;">Forgot Password?</p>
-            <div id="msg-l"></div>
+            <button class="btn" onclick="doLogin()">Login</button>
+            <p style="margin-top:20px; font-size:13px;">New user? <b onclick="show('v-signup')" style="color:var(--navy)">Sign Up</b></p>
+            <div id="msg-l" style="margin-top:10px; font-size:12px; font-weight:600;"></div>
         </div>
     </div>
 
     <div id="v-signup" class="view">
         <div class="auth-card">
             <h2 style="color:var(--navy)">Register</h2>
-            <div class="input-box"><input type="text" id="s-name" placeholder="Full Name"></div>
-            <div class="input-box"><input type="email" id="s-email" placeholder="Email Address"></div>
-            <div class="input-box"><input type="tel" id="s-phone" placeholder="Phone Number"></div>
-            <div class="input-box">
+            <div class="input-group"><input type="text" id="s-name" placeholder="Full Name"></div>
+            <div class="input-group"><input type="email" id="s-email" placeholder="Email Address"></div>
+            <div class="input-group"><input type="tel" id="s-phone" placeholder="Phone Number"></div>
+            <div class="input-group">
                 <input type="password" id="s-pass" placeholder="Password">
-                <i class="fas fa-eye eye" onclick="toggle('s-pass', this)"></i>
+                <i class="fas fa-eye eye" onclick="togglePass('s-pass', this)"></i>
             </div>
-            <button class="btn" onclick="signup()">Create Account</button>
+            <button class="btn" onclick="doSignup()">Create Account</button>
             <p onclick="show('v-login')" style="margin-top:15px; font-size:13px;">Back to Login</p>
-            <div id="msg-s"></div>
-        </div>
-    </div>
-
-    <div id="v-forgot" class="view">
-        <div class="auth-card">
-            <h2 style="color:var(--navy)">Recovery</h2>
-            <div class="input-box"><input type="email" id="f-email" placeholder="Registered Email"></div>
-            <button class="btn" onclick="forgot()">Reset Password</button>
-            <p onclick="show('v-login')" style="margin-top:15px; font-size:13px;">Back to Login</p>
-            <div id="msg-f"></div>
+            <div id="msg-s" style="margin-top:10px; font-size:12px;"></div>
         </div>
     </div>
 
     <div id="v-dash" class="view">
         <div class="header">
-            <div><h2 id="user-display" style="margin:0; color:var(--navy)">Hi!</h2><p style="margin:0; font-size:12px; color:#64748b;">Pick a class to start</p></div>
-            <i class="fas fa-power-off" style="color:red; font-size:20px;" onclick="logout()"></i>
+            <h3 id="u-name" style="margin:0; color:var(--navy)">Hi!</h3>
+            <i class="fas fa-power-off" style="color:red; font-size:20px;" onclick="doLogout()"></i>
         </div>
-        <div id="class-container"></div>
+        <div id="class-list" style="width:100%"></div>
     </div>
 
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbyu1NWxo3WsqJy7ErbNRHlU4Agi1mnYfwVjiKAsHsXFcyrafmtSc3ej2mcTrfnlSqR7yA/exec";
-
-        function getID() {
-            let id = localStorage.getItem('et_id');
-            if(!id) { id = 'did_' + Date.now(); localStorage.setItem('et_did', id); }
-            return id;
-        }
+        const API = "https://script.google.com/macros/s/AKfycbyLGyY2m7QgdsXkUILMIzfMhAXkElkIXGClqdrNK4idS1hu3jisRkn8MabCQhoooPAT/exec";
+        let statusInterval;
 
         function show(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        function toggle(id, el) {
+        function togglePass(id, el) {
             const x = document.getElementById(id);
             x.type = x.type === "password" ? "text" : "password";
             el.classList.toggle('fa-eye-slash');
         }
 
-        async function login() {
+        // THE BRUTAL CHECKER
+        async function checkBrutalStatus() {
+            const session = JSON.parse(localStorage.getItem('et_user'));
+            if(!session) return;
+
+            try {
+                const res = await fetch(`${API}?action=check_status&email=${session.userEmail}`);
+                const d = await res.json();
+                if(d.status !== "TRUE") {
+                    clearInterval(statusInterval);
+                    alert("Session Expired or Logged out by Admin.");
+                    forceLogout();
+                }
+            } catch(e) {}
+        }
+
+        async function doLogin() {
             const e = document.getElementById('l-email').value, p = document.getElementById('l-pass').value, m = document.getElementById('msg-l');
             if(!e || !p) return;
             m.style.color = "var(--navy)"; m.innerText = "Verifying...";
+
             try {
-                const res = await fetch(`${API}?action=login&email=${e}&pass=${p}&deviceId=${getID()}`);
+                const res = await fetch(`${API}?action=login&email=${e}&pass=${p}`);
                 const d = await res.json();
                 if(d.status === 'success') {
-                    m.style.color = "green"; m.innerText = d.message;
-                    localStorage.setItem('et_session', JSON.stringify(d));
-                    setTimeout(() => render(d), 1000);
+                    localStorage.setItem('et_user', JSON.stringify(d));
+                    startDashboard(d);
                 } else { m.style.color="red"; m.innerText = d.message; }
-            } catch { m.innerText = "Connection error"; }
+            } catch { m.innerText = "Connection Error"; }
         }
 
-        function render(data) {
-            document.getElementById('user-display').innerText = "Hi " + (data.userName || "Student");
-            const list = document.getElementById('class-container');
-            list.innerHTML = "";
-            ['class8', 'class9', 'class10', 'class11', 'class12'].forEach(c => {
-                const access = data.permissions[c];
-                const item = document.createElement('div');
-                item.className = `class-card ${access ? '' : 'locked'}`;
-                item.innerHTML = `<div class="c-icon"><i class="fas ${access ? 'fa-book-reader' : 'fa-lock'}"></i></div>
-                                  <div><h3 style="margin:0; font-size:16px;">${c.toUpperCase()}</h3>
-                                  <span style="font-size:12px; color:#888;">${access ? 'Tap to start' : 'Locked'}</span></div>`;
-                list.appendChild(item);
-            });
+        function startDashboard(data) {
+            document.getElementById('u-name').innerText = "Hi " + data.userName;
             show('v-dash');
+            // Start checking every 10 seconds if Admin has flipped the switch
+            statusInterval = setInterval(checkBrutalStatus, 10000); 
         }
 
-        async function signup() {
+        async function doLogout() {
+            const session = JSON.parse(localStorage.getItem('et_user'));
+            if(session) await fetch(`${API}?action=logout_action&email=${session.userEmail}`);
+            forceLogout();
+        }
+
+        function forceLogout() {
+            localStorage.removeItem('et_user');
+            clearInterval(statusInterval);
+            location.reload();
+        }
+
+        async function doSignup() {
             const n = document.getElementById('s-name').value, e = document.getElementById('s-email').value, ph = document.getElementById('s-phone').value, p = document.getElementById('s-pass').value, m = document.getElementById('msg-s');
-            if(!n || !e || !ph || !p) { m.style.color="red"; m.innerText="All fields are mandatory!"; return; }
-            m.style.color = "var(--navy)"; m.innerText = "Processing...";
+            if(!n || !e || !ph || !p) { m.innerText = "All fields mandatory"; return; }
+            m.innerText = "Processing...";
             const res = await fetch(`${API}?action=register&name=${n}&email=${e}&pass=${p}&phone=${ph}`);
-            const d = await res.json();
-            m.style.color = d.status==='success' ? "green" : "red"; m.innerText = d.message;
-        }
-
-        async function forgot() {
-            const e = document.getElementById('f-email').value, m = document.getElementById('msg-f');
-            if(!e) return;
-            m.innerText = "Sending request...";
-            const res = await fetch(`${API}?action=forgot&email=${e}`);
             const d = await res.json();
             m.style.color = "green"; m.innerText = d.message;
         }
 
-        function logout() {
-            const s = JSON.parse(localStorage.getItem('et_session'));
-            if(s) fetch(`${API}?action=logout_alert&email=${s.userEmail}`);
-            localStorage.removeItem('et_session');
-            location.reload();
-        }
-
         window.onload = () => {
-            const s = localStorage.getItem('et_session');
-            if(s) render(JSON.parse(s));
+            const session = localStorage.getItem('et_user');
+            if(session) startDashboard(JSON.parse(session));
         }
     </script>
 </body>
