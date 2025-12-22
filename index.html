@@ -6,68 +6,90 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --navy: #002147; --gold: #FFB800; --bg: #ffffff; }
-        body, html { height: 100%; margin: 0; background: var(--bg); font-family: 'Poppins', sans-serif; overflow: hidden; }
-        .view-section { display: none; height: 100vh; width: 100vw; padding: 25px; flex-direction: column; align-items: center; justify-content: center; background: white; }
+        :root { --navy: #002147; --gold: #FFB800; --bg: #ffffff; --card: #f8fafc; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { height: 100%; margin: 0; background: var(--bg); font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        
+        /* Layout */
+        .view-section { display: none; min-height: 100vh; width: 100vw; padding: 25px; flex-direction: column; background: white; }
         .active-view { display: flex; }
+        .center-content { align-items: center; justify-content: center; }
+
+        /* Auth UI */
         .auth-card { width: 100%; max-width: 350px; text-align: center; }
-        .logo { width: 120px; height: 120px; margin-bottom: 15px; border-radius: 50%; }
+        .logo { width: 110px; height: 110px; margin-bottom: 15px; border-radius: 50%; object-fit: contain; }
         .input-group { width: 100%; margin-bottom: 12px; position: relative; }
         .input-group input { width: 100%; padding: 15px; border: 1.5px solid #e2e8f0; border-radius: 12px; outline: none; font-size: 15px; background: #fcfcfc; }
-        .input-group i.eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
-        .btn { width: 100%; padding: 16px; background: var(--navy); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        #msg { margin-top: 15px; font-size: 13px; font-weight: 600; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--navy); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
+        .btn { width: 100%; padding: 16px; background: var(--navy); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        
+        /* Dashboard UI */
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; width: 100%; }
+        .class-card { display: flex; align-items: center; padding: 18px; border-radius: 15px; background: var(--card); margin-bottom: 12px; border: 1px solid #e2e8f0; width: 100%; text-decoration: none; color: inherit; }
+        .class-card.locked { opacity: 0.6; }
+        .c-icon { width: 45px; height: 45px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: var(--navy); font-size: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .c-info h3 { margin: 0; font-size: 16px; color: var(--navy); }
+        .c-info span { font-size: 12px; color: #64748b; }
+        
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--navy); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="view-login" class="view-section active-view">
+    <div id="view-login" class="view-section active-view center-content">
         <div class="auth-card">
             <img src="https://lh3.googleusercontent.com/d/1obO5_MsRtrX8xqGW4JfymBqbkOuIOmJ2" class="logo">
             <h2 style="color:var(--navy); margin:0;">ExamTopper</h2>
-            <p style="color:#64748b; font-size:13px; margin-bottom:25px;">Welcome Back</p>
+            <p style="color:#64748b; font-size:13px; margin-bottom:25px;">Achieve Excellence</p>
             <div class="input-group"><input type="email" id="l-email" placeholder="Email"></div>
             <div class="input-group">
                 <input type="password" id="l-pass" placeholder="Password">
                 <i class="fas fa-eye eye-icon" onclick="togglePass('l-pass', this)"></i>
             </div>
             <button class="btn" onclick="doLogin()">Login</button>
-            <p style="font-size:13px; margin-top:20px;">No account? <b onclick="showView('view-signup')" style="color:var(--navy)">Sign Up</b></p>
-            <p onclick="showView('view-forgot')" style="font-size:12px; color:#94a3b8;">Forgot Password?</p>
-            <div id="l-msg"></div>
+            <p style="font-size:13px; margin-top:20px;">New user? <b onclick="showView('view-signup')" style="color:var(--navy)">Sign Up</b></p>
+            <p onclick="showView('view-forgot')" style="font-size:12px; color:#94a3b8; margin-top:10px;">Forgot Password?</p>
+            <div id="l-msg" style="margin-top:10px;"></div>
         </div>
     </div>
 
-    <div id="view-signup" class="view-section">
+    <div id="view-signup" class="view-section center-content">
         <div class="auth-card">
-            <h2 style="color:var(--navy)">Join Us</h2>
-            <div class="input-group"><input type="text" id="s-name" placeholder="Full Name (Required)"></div>
-            <div class="input-group"><input type="email" id="s-email" placeholder="Email (Required)"></div>
-            <div class="input-group"><input type="tel" id="s-phone" placeholder="Phone Number (Required)"></div>
+            <h2 style="color:var(--navy)">Create Account</h2>
+            <div class="input-group"><input type="text" id="s-name" placeholder="Full Name"></div>
+            <div class="input-group"><input type="email" id="s-email" placeholder="Email"></div>
+            <div class="input-group"><input type="tel" id="s-phone" placeholder="Phone Number"></div>
             <div class="input-group">
-                <input type="password" id="s-pass" placeholder="Password (Required)">
+                <input type="password" id="s-pass" placeholder="Password">
                 <i class="fas fa-eye eye-icon" onclick="togglePass('s-pass', this)"></i>
             </div>
-            <button class="btn" onclick="doSignup()">Create Account</button>
+            <button class="btn" onclick="doSignup()">Sign Up</button>
             <p onclick="showView('view-login')" style="margin-top:15px; font-size:13px;">Back to Login</p>
             <div id="s-msg"></div>
         </div>
     </div>
 
-    <div id="view-forgot" class="view-section">
+    <div id="view-forgot" class="view-section center-content">
         <div class="auth-card">
-            <h2 style="color:var(--navy)">Reset Password</h2>
-            <div class="input-group"><input type="email" id="f-email" placeholder="Your Registered Email"></div>
+            <h2 style="color:var(--navy)">Reset Access</h2>
+            <div class="input-group"><input type="email" id="f-email" placeholder="Registered Email"></div>
             <button class="btn" onclick="doForgot()">Request Reset</button>
             <p onclick="showView('view-login')" style="margin-top:15px; font-size:13px;">Back</p>
             <div id="f-msg"></div>
         </div>
     </div>
 
+    <div id="view-dashboard" class="view-section">
+        <div class="dash-header">
+            <div><h2 id="u-name" style="margin:0; color:var(--navy)">Hi!</h2><p style="margin:0; font-size:12px; color:#64748b;">Ready to study?</p></div>
+            <button onclick="doLogout()" style="border:none; background:none; color:red; font-size:20px;"><i class="fas fa-power-off"></i></button>
+        </div>
+        <div id="classes-list"></div>
+    </div>
+
     <script>
-        const URL = "https://script.google.com/macros/s/AKfycbwUk2TqfE-I3Tem5N6GIpKTG7zRv9OTuf63pQ11ntD4eBkKk2sMEgf86j5c0QPHolKAvQ/exec";
+        const URL = "https://script.google.com/macros/s/AKfycbyHWCAXeVK63X6p7inDYStVdLF0jA-2aHvXJVJrIfLLP3sCtyEw02AgPWlEyLvENIdiBw/exec";
 
         function getDID() {
             let id = localStorage.getItem('et_did');
@@ -77,13 +99,14 @@
 
         function showView(id) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-            document.getElementById(id).classList.add('active-view');
+            const target = document.getElementById(id);
+            target.classList.add('active-view');
         }
 
         function togglePass(id, el) {
             const input = document.getElementById(id);
-            if(input.type === "password") { input.type="text"; el.classList.replace('fa-eye','fa-eye-slash'); }
-            else { input.type="password"; el.classList.replace('fa-eye-slash','fa-eye'); }
+            input.type = input.type === "password" ? "text" : "password";
+            el.classList.toggle('fa-eye'); el.classList.toggle('fa-eye-slash');
         }
 
         async function doLogin() {
@@ -96,11 +119,29 @@
                 const res = await fetch(`${URL}?action=login&email=${e}&pass=${p}&deviceId=${getDID()}`);
                 const d = await res.json();
                 if(d.status === 'success') {
-                    m.style.color = "green";
-                    m.innerText = d.message; // Shows "Logging in. Removing others..." if applicable
-                    setTimeout(() => alert("Dashboard Loading..."), 1500); 
+                    localStorage.setItem('et_user', JSON.stringify(d));
+                    renderDashboard(d);
                 } else { m.style.color="red"; m.innerText = d.message; }
-            } catch { m.innerText = "Error"; }
+            } catch { m.innerText = "Error Connecting"; }
+        }
+
+        function renderDashboard(data) {
+            document.getElementById('u-name').innerText = "Hi " + data.userName;
+            const list = document.getElementById('classes-list');
+            list.innerHTML = "";
+            const classes = [
+                { id: 'class8', label: 'Class 8' }, { id: 'class9', label: 'Class 9' },
+                { id: 'class10', label: 'Class 10' }, { id: 'class11', label: 'Class 11' }, { id: 'class12', label: 'Class 12' }
+            ];
+            classes.forEach(c => {
+                const access = data.permissions[c.id];
+                const card = document.createElement('div');
+                card.className = `class-card ${access ? '' : 'locked'}`;
+                card.innerHTML = `<div class="c-icon"><i class="fas ${access ? 'fa-book' : 'fa-lock'}"></i></div>
+                                  <div class="c-info"><h3>${c.label}</h3><span>${access ? 'Tap to start' : 'Subscription Required'}</span></div>`;
+                list.appendChild(card);
+            });
+            showView('view-dashboard');
         }
 
         async function doSignup() {
@@ -109,29 +150,33 @@
             const ph = document.getElementById('s-phone').value;
             const p = document.getElementById('s-pass').value;
             const m = document.getElementById('s-msg');
-            
-            if(!n || !e || !ph || !p) { m.style.color="red"; m.innerText = "All fields are mandatory!"; return; }
-            
-            m.innerHTML = '<div class="loader"></div> Processing...';
-            try {
-                const res = await fetch(`${URL}?action=register&name=${n}&email=${e}&pass=${p}&phone=${ph}`);
-                const d = await res.json();
-                m.style.color = d.status === 'success' ? "green" : "red";
-                m.innerText = d.message; // Shows "A confirmation email has been sent..."
-            } catch { m.innerText = "Connection Error"; }
+            if(!n || !e || !ph || !p) { m.style.color="red"; m.innerText="All fields mandatory"; return; }
+            m.innerHTML = '<div class="loader"></div> Saving...';
+            const res = await fetch(`${URL}?action=register&name=${n}&email=${e}&pass=${p}&phone=${ph}`);
+            const d = await res.json();
+            m.style.color = d.status==='success' ? "green" : "red";
+            m.innerText = d.message;
         }
 
         async function doForgot() {
             const e = document.getElementById('f-email').value;
             const m = document.getElementById('f-msg');
-            if(!e) return;
-            m.innerHTML = '<div class="loader"></div> Sending Request...';
-            try {
-                const res = await fetch(`${URL}?action=forgot&email=${e}`);
-                const d = await res.json();
-                m.style.color = "green";
-                m.innerText = d.message; // Shows "A password reset link has been sent..."
-            } catch { m.innerText = "Error"; }
+            m.innerHTML = '<div class="loader"></div> Requesting...';
+            const res = await fetch(`${URL}?action=forgot&email=${e}`);
+            const d = await res.json();
+            m.style.color = "green"; m.innerText = d.message;
+        }
+
+        function doLogout() {
+            const user = JSON.parse(localStorage.getItem('et_user'));
+            if(user) fetch(`${URL}?action=logout_alert&email=${user.userEmail}`);
+            localStorage.removeItem('et_user');
+            location.reload();
+        }
+
+        window.onload = () => {
+            const user = localStorage.getItem('et_user');
+            if(user) renderDashboard(JSON.parse(user));
         }
     </script>
 </body>
