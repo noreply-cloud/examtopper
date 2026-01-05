@@ -1,185 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>ExamTopper</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App Loading</title>
     <style>
-        :root { --navy: #002147; --bg: #ffffff; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { height: 100%; margin: 0; background: var(--bg); font-family: 'Poppins', sans-serif; overflow: hidden; }
-        
-        .view { display: none; height: 100vh; width: 100vw; padding: 30px; flex-direction: column; align-items: center; justify-content: center; background: white; }
-        .active { display: flex; }
-        
-        .auth-card { width: 100%; max-width: 350px; text-align: center; }
-        .logo { width: 100px; height: 100px; margin-bottom: 10px; border-radius: 50%; border: 2px solid var(--navy); }
-        
-        .input-box { width: 100%; margin-bottom: 15px; position: relative; }
-        .input-box input { width: 100%; padding: 16px; border: 2px solid #f1f5f9; border-radius: 12px; outline: none; background: #fafafa; font-size: 15px; }
-        .eye { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
-        
-        .btn { width: 100%; padding: 16px; background: var(--navy); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; }
-        .btn:active { transform: scale(0.98); }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; width: 100%; position: fixed; top: 0; background: white; z-index: 10; }
-        #v-dash { justify-content: flex-start; padding-top: 100px; overflow-y: auto; }
-        .class-card { display: flex; align-items: center; padding: 20px; border-radius: 15px; background: #fff; border: 2px solid #f1f5f9; margin-bottom: 12px; width: 100%; }
-        .class-card.locked { opacity: 0.5; background: #f8fafc; }
-        .c-icon { margin-right: 15px; font-size: 20px; color: var(--navy); }
+        /* Reset margins and ensure full height */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000; /* Black background looks professional */
+            overflow: hidden; /* Disables scrolling */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+
+        video {
+            /* This ensures the video fits within the screen without stretching */
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; 
+        }
     </style>
 </head>
 <body>
 
-    <div id="v-login" class="view active">
-        <div class="auth-card">
-            <img src="https://lh3.googleusercontent.com/d/1obO5_MsRtrX8xqGW4JfymBqbkOuIOmJ2" class="logo">
-            <h2 style="color:var(--navy); margin:0;">ExamTopper</h2>
-            <div class="input-box"><input type="email" id="l-email" placeholder="Email Address"></div>
-            <div class="input-box">
-                <input type="password" id="l-pass" placeholder="Password">
-                <i class="fas fa-eye eye" onclick="togglePass('l-pass', this)"></i>
-            </div>
-            <button class="btn" onclick="doLogin()">Login</button>
-            <p style="margin-top:20px; font-size:13px;">New user? <b onclick="show('v-signup')" style="color:var(--navy); cursor:pointer;">Sign Up</b></p>
-            <p onclick="show('v-forgot')" style="font-size:12px; color:#94a3b8; cursor:pointer;">Forgot Password?</p>
-            <div id="msg-l" style="margin-top:10px; font-size:12px; font-weight:600;"></div>
-        </div>
-    </div>
+    <video 
+        src="Untitled design.mp4" 
+        autoplay 
+        muted 
+        loop 
+        playsinline 
+        webkit-playsinline>
+    </video>
 
-    <div id="v-signup" class="view">
-        <div class="auth-card">
-            <h2 style="color:var(--navy)">Register</h2>
-            <div class="input-box"><input type="text" id="s-name" placeholder="Full Name"></div>
-            <div class="input-box"><input type="email" id="s-email" placeholder="Email Address"></div>
-            <div class="input-box"><input type="tel" id="s-phone" placeholder="Phone Number"></div>
-            <div class="input-box">
-                <input type="password" id="s-pass" placeholder="Password">
-                <i class="fas fa-eye eye" onclick="togglePass('s-pass', this)"></i>
-            </div>
-            <button class="btn" onclick="doSignup()">Create Account</button>
-            <p onclick="show('v-login')" style="margin-top:15px; font-size:13px; cursor:pointer;">Back to Login</p>
-            <div id="msg-s" style="margin-top:10px; font-size:12px;"></div>
-        </div>
-    </div>
-
-    <div id="v-forgot" class="view">
-        <div class="auth-card">
-            <h2 style="color:var(--navy)">Recovery</h2>
-            <div class="input-box"><input type="email" id="f-email" placeholder="Registered Email"></div>
-            <button class="btn" onclick="doForgot()">Request Reset Link</button>
-            <p onclick="show('v-login')" style="margin-top:15px; font-size:13px; cursor:pointer;">Back</p>
-            <div id="msg-f"></div>
-        </div>
-    </div>
-
-    <div id="v-dash" class="view">
-        <div class="header">
-            <h3 id="u-name" style="margin:0; color:var(--navy)">Hi!</h3>
-            <i class="fas fa-power-off" style="color:red; font-size:22px; cursor:pointer;" onclick="doLogout()"></i>
-        </div>
-        <div id="class-list" style="width:100%"></div>
-    </div>
-
-    <script>
-        // PASTE YOUR NEW DEPLOYMENT URL HERE
-        const API = "https://script.google.com/macros/s/AKfycbxhQXtrpAEUgxAQMbcAHyQUPb8YcnM_rqRpxR7qakOSggIOn5fBnlajZth4AXJolsYfJA/exec";
-        let statusInterval;
-
-        function show(id) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function togglePass(id, el) {
-            const x = document.getElementById(id);
-            x.type = x.type === "password" ? "text" : "password";
-            el.classList.toggle('fa-eye-slash');
-        }
-
-        // BRUTAL CHECKER (Runs every 5 seconds as requested)
-        async function checkBrutalStatus() {
-            const session = JSON.parse(localStorage.getItem('et_user'));
-            if(!session) return;
-            try {
-                const res = await fetch(`${API}?action=check_status&email=${encodeURIComponent(session.userEmail)}`);
-                const d = await res.json();
-                if(d.status !== "TRUE") {
-                    clearInterval(statusInterval);
-                    alert("Session Blocked. Logged out by Admin.");
-                    forceLogout();
-                }
-            } catch(e) {}
-        }
-
-        async function doLogin() {
-            const e = document.getElementById('l-email').value, p = document.getElementById('l-pass').value, m = document.getElementById('msg-l');
-            if(!e || !p) { m.innerText = "Enter all details"; return; }
-            m.style.color = "var(--navy)"; m.innerText = "Connecting...";
-
-            try {
-                const res = await fetch(`${API}?action=login&email=${encodeURIComponent(e)}&pass=${encodeURIComponent(p)}`);
-                const d = await res.json();
-                if(d.status === 'success') {
-                    localStorage.setItem('et_user', JSON.stringify(d));
-                    startDashboard(d);
-                } else { m.style.color="red"; m.innerText = d.message; }
-            } catch(err) { m.style.color="red"; m.innerText = "Connection Error. Check URL/Internet."; }
-        }
-
-        function startDashboard(data) {
-            document.getElementById('u-name').innerText = "Hi " + (data.userName || "Student");
-            const list = document.getElementById('class-list');
-            list.innerHTML = "";
-            ['class8', 'class9', 'class10', 'class11', 'class12'].forEach(c => {
-                const access = data.permissions[c];
-                const item = document.createElement('div');
-                item.className = `class-card ${access ? '' : 'locked'}`;
-                item.innerHTML = `<i class="fas ${access ? 'fa-book-open' : 'fa-lock'} c-icon"></i>
-                                  <div><h4 style="margin:0">${c.toUpperCase()}</h4></div>`;
-                list.appendChild(item);
-            });
-            show('v-dash');
-            statusInterval = setInterval(checkBrutalStatus, 5000); 
-        }
-
-        async function doLogout() {
-            const session = JSON.parse(localStorage.getItem('et_user'));
-            if(session) await fetch(`${API}?action=logout_action&email=${encodeURIComponent(session.userEmail)}`);
-            forceLogout();
-        }
-
-        function forceLogout() {
-            localStorage.removeItem('et_user');
-            clearInterval(statusInterval);
-            location.reload();
-        }
-
-        async function doSignup() {
-            const n = document.getElementById('s-name').value, e = document.getElementById('s-email').value, ph = document.getElementById('s-phone').value, p = document.getElementById('s-pass').value, m = document.getElementById('msg-s');
-            if(!n || !e || !ph || !p) { m.style.color="red"; m.innerText = "All fields mandatory"; return; }
-            m.style.color="var(--navy)"; m.innerText = "Registering...";
-            try {
-                const res = await fetch(`${API}?action=register&name=${encodeURIComponent(n)}&email=${encodeURIComponent(e)}&pass=${encodeURIComponent(p)}&phone=${encodeURIComponent(ph)}`);
-                const d = await res.json();
-                m.style.color = d.status === 'success' ? "green" : "red"; m.innerText = d.message;
-            } catch(err) { m.style.color="red"; m.innerText = "Connection Error."; }
-        }
-
-        async function doForgot() {
-            const e = document.getElementById('f-email').value, m = document.getElementById('msg-f');
-            if(!e) return;
-            m.innerText = "Sending...";
-            const res = await fetch(`${API}?action=forgot&email=${encodeURIComponent(e)}`);
-            const d = await res.json();
-            m.style.color = "green"; m.innerText = d.message;
-        }
-
-        window.onload = () => {
-            const session = localStorage.getItem('et_user');
-            if(session) startDashboard(JSON.parse(session));
-        }
-    </script>
 </body>
 </html>
